@@ -1,0 +1,7 @@
+.env
+node_modules/
+data/competitor-research/
+data/generated-scripts/
+data/creatives/
+data/ad-performance/
+*.mp4

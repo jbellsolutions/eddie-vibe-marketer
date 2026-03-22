@@ -1,0 +1,28 @@
+{
+  "meta_ad_library": {
+    "apify_actor_id": "apify/facebook-ads-scraper",
+    "default_country": "US",
+    "ad_type": "VIDEO",
+    "active_only": true,
+    "max_ads_per_competitor": 50,
+    "sort_by": "longest_running"
+  },
+  "competitors": [
+    {
+      "name": "Competitor 1",
+      "advertiser_id": "",
+      "keywords": ["your niche keyword 1", "your niche keyword 2"]
+    },
+    {
+      "name": "Competitor 2",
+      "advertiser_id": "",
+      "keywords": ["your niche keyword 3"]
+    }
+  ],
+  "whisper": {
+    "model": "whisper-1",
+    "language": "en",
+    "response_format": "verbose_json"
+  },
+  "output_dir": "./data/competitor-research"
+}

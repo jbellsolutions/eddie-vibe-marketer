@@ -1,0 +1,22 @@
+{
+  "name": "eddie-vibe-marketer",
+  "version": "1.0.0",
+  "description": "Self-improving vibe marketing system - scrape competitor ads, generate scripts, produce creatives, optimize on performance data",
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "phase1:research": "node scripts/ad-research.js",
+    "phase2:voice-check": "node scripts/voice-check.js",
+    "phase3:generate": "node scripts/generate-scripts.js",
+    "phase4:produce": "node scripts/produce-creatives.js",
+    "phase5:optimize": "node scripts/optimize-loop.js",
+    "full-cycle": "node scripts/full-cycle.js"
+  },
+  "dependencies": {
+    "apify-client": "^2.9.0",
+    "openai": "^4.52.0",
+    "dotenv": "^16.4.0",
+    "axios": "^1.7.0",
+    "csv-writer": "^1.6.0",
+    "csv-parser": "^3.0.0"
+  }
+}
