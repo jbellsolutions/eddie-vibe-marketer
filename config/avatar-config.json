@@ -1,0 +1,39 @@
+{
+  "heygen": {
+    "avatar_mappings": [
+      {
+        "icp_pattern": "mom",
+        "avatar_ids": [],
+        "description": "Female, 30-45, warm and relatable",
+        "_note": "Run npm run setup to list available HeyGen avatars, then add IDs here"
+      },
+      {
+        "icp_pattern": "student",
+        "avatar_ids": [],
+        "description": "Male or Female, 18-25, energetic"
+      },
+      {
+        "icp_pattern": "professional",
+        "avatar_ids": [],
+        "description": "Male, 30-50, confident"
+      },
+      {
+        "icp_pattern": "retiree",
+        "avatar_ids": [],
+        "description": "Male or Female, 55+, calm and trustworthy"
+      }
+    ],
+    "default_avatar_ids": [],
+    "_note": "Add at least one default avatar ID for ICPs that don't match any pattern"
+  },
+  "argil": {
+    "clone_id": "",
+    "max_per_cycle": 10,
+    "use_for_formats": ["ugc-video"],
+    "_note": "Set clone_id after creating your personal clone on argil.ai"
+  },
+  "ugc_creators": {
+    "top_n": 15,
+    "_note": "Top N scripts go to human UGC creators instead of AI avatars"
+  }
+}

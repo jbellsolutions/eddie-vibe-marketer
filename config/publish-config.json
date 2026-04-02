@@ -1,0 +1,19 @@
+{
+  "schedule": {
+    "facebook": { "posts_per_day": 2, "times": ["09:00", "17:00"] },
+    "linkedin": { "posts_per_day": 1, "times": ["08:30"] },
+    "instagram": { "posts_per_day": 2, "times": ["12:00", "19:00"] },
+    "tiktok": { "posts_per_day": 3, "times": ["10:00", "14:00", "20:00"] }
+  },
+  "enabled_platforms": ["facebook", "linkedin", "instagram", "tiktok"],
+  "chrome_profile_path": "/Users/home/Library/Application Support/Google/Chrome/Default",
+  "python_venv": "/Users/home/browser-use-local/.venv/bin/python",
+  "max_retries": 2,
+  "retry_delay_seconds": 60,
+  "jitter_minutes": 5,
+  "_docs": {
+    "times": "24-hour format in your local timezone",
+    "jitter_minutes": "Random +/- minutes added to scheduled times to appear human",
+    "chrome_profile_path": "Path to your Chrome profile where social accounts are logged in"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "router_key": "council_router",
+  "display_name": "Copywriter Council Router",
+  "version": "1.0.0",
+  "description": "Orchestrator that analyzes any copywriting brief and routes to the optimal combination of copywriter agents.",
+  "system_prompt": "You are the Copywriter Council Router. You orchestrate 18 legendary copywriter agents and their 59 specialized sub-agents. When given a brief, you: 1) Analyze the market awareness level (Schwartz's 5 levels), 2) Analyze the market sophistication stage (Schwartz's 5 stages), 3) Identify the content type needed, 4) Select the 1-3 best copywriter agents for the task, 5) Specify which sub-agents to activate, 6) Define the workflow (sequential or parallel). You always start with schwartz.awareness and schwartz.sophistication for diagnosis, then route to specialists. You can run agents in parallel for A/B testing.",
+  "routing_rules": {
+    "always_first": ["schwartz.awareness", "schwartz.sophistication"],
+    "content_type_routing": {
+      "sales_page": ["eugene_schwartz", "dan_kennedy", "joe_sugarman", "todd_brown"],
+      "cold_email": ["jon_buchan", "lead_gen_jay", "bill_mueller"],
+      "email_sequence": ["bill_mueller", "brian_kurtz", "todd_brown"],
+      "headline": ["eugene_schwartz", "gary_bencivenga"],
+      "offer_design": ["alex_hormozi", "jay_abraham", "todd_brown"],
+      "funnel_copy": ["todd_brown", "alex_hormozi", "perry_marshall"],
+      "launch_sequence": ["todd_brown", "brian_kurtz", "alex_hormozi"],
+      "authority_content": ["jay_abraham", "brian_kurtz", "tom_bilyeu"],
+      "jv_outreach": ["jay_abraham", "jon_buchan"],
+      "ai_service_offer": ["liam_ottley", "alex_hormozi"],
+      "lead_gen_system": ["lead_gen_jay", "jon_buchan"],
+      "direct_mail": ["dan_kennedy", "brian_kurtz", "gordon_grossman"],
+      "radio_ad": ["fred_catona"],
+      "tv_infomercial": ["greg_renker"],
+      "mindset_content": ["tom_bilyeu"],
+      "market_analysis": ["eugene_schwartz", "perry_marshall", "jay_abraham"]
+    },
+    "combination_patterns": {
+      "full_sales_page": {
+        "description": "Complete sales page from diagnosis to CTA",
+        "agents": ["eugene_schwartz", "gary_bencivenga", "dan_kennedy", "alex_hormozi"],
+        "workflow": "schwartz diagnoses → bencivenga headlines → kennedy body → hormozi offer"
+      },
+      "cold_outreach_campaign": {
+        "description": "Multi-touch cold outreach sequence",
+        "agents": ["jon_buchan", "lead_gen_jay", "bill_mueller"],
+        "workflow": "buchan opener → leadgenjay follow-ups → mueller story nurture"
+      },
+      "product_launch": {
+        "description": "Full product launch sequence",
+        "agents": ["todd_brown", "jay_abraham", "brian_kurtz", "alex_hormozi", "eugene_schwartz"],
+        "workflow": "schwartz diagnosis → brown launch framework → abraham positioning → kurtz warmup → hormozi offer"
+      },
+      "ab_test_headlines": {
+        "description": "Generate competing headlines from different masters",
+        "agents": ["eugene_schwartz", "gary_bencivenga", "dan_kennedy"],
+        "workflow": "parallel: all three generate headlines → compare and select"
+      }
+    }
+  },
+  "total_agents": 18,
+  "total_sub_agents": 59,
+  "agent_registry": "council/agents/"
+}

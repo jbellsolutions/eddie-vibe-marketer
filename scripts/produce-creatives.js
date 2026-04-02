@@ -1,92 +1,59 @@
 #!/usr/bin/env node
 /**
- * PHASE 4: Creative Production
- * - Loads generated scripts from Phase 3
- * - Ranks scripts by potential (based on source ad longevity + angle diversity)
- * - Top 10-15 scripts → exports for UGC creators (human filming)
- * - Remaining scripts → pushes to Arcads API for AI actor video generation
- * - Tracks all creative assets and their source scripts
+ * PHASE 4: Multi-Format Creative Production
+ *
+ * Processes generated scripts into production-ready assets:
+ * - UGC video scripts → Top N exported as creator briefs (human filming)
+ * - UGC video scripts → Argil for personal clone videos
+ * - UGC video scripts → HeyGen for ICP-matched avatar videos
+ * - Screenshot statics → Rendered as PNG images via Puppeteer
+ * - Carousels → Rendered as PNG slide sets via Puppeteer
+ * - Text overlays → Rendered as PNG card sets via Puppeteer
+ * - LinkedIn posts, captions, b-roll scripts → Text-only (saved to manifest)
+ *
+ * Outputs a production-manifest.json tracking all creatives and their platform targets.
  */
 
-const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const { createObjectCsvWriter } = require('csv-writer');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
+const { HeyGenClient } = require('./lib/heygen-client');
+const { ArgilClient } = require('./lib/argil-client');
+const {
+  parseScreenshotContent, parseCarouselContent, parseTextOverlayContent,
+  buildScreenshotHTML, buildCarouselSlideHTML, buildTextOverlayCardHTML,
+  renderHTMLToPNG,
+} = require('./lib/image-generator');
+
 const ROOT = path.resolve(__dirname, '..');
 const SCRIPTS_PATH = path.join(ROOT, 'data', 'generated-scripts', 'all-scripts.json');
 const OUTPUT_DIR = path.join(ROOT, 'data', 'creatives');
-
-const UGC_COUNT = 15; // Top N scripts go to human creators
-
-// ─── Arcads API Client ───
-class ArcadsClient {
-  constructor(apiKey) {
-    this.apiKey = apiKey;
-    this.baseUrl = 'https://api.arcads.ai/v1';
-  }
-
-  async listActors() {
-    const res = await axios.get(`${this.baseUrl}/actors`, {
-      headers: { Authorization: `Bearer ${this.apiKey}` },
-    });
-    return res.data;
-  }
-
-  async createVideo(scriptText, actorId, options = {}) {
-    const res = await axios.post(
-      `${this.baseUrl}/videos`,
-      {
-        script: scriptText,
-        actor_id: actorId,
-        aspect_ratio: options.aspectRatio || '9:16',
-        ...options,
-      },
-      { headers: { Authorization: `Bearer ${this.apiKey}` } }
-    );
-    return res.data;
-  }
-
-  async getVideoStatus(videoId) {
-    const res = await axios.get(`${this.baseUrl}/videos/${videoId}`, {
-      headers: { Authorization: `Bearer ${this.apiKey}` },
-    });
-    return res.data;
-  }
-}
+const AVATAR_CONFIG_PATH = path.join(ROOT, 'config', 'avatar-config.json');
 
 // ─── Script Ranking ───
+
 function rankScripts(scripts) {
-  // Simple ranking: prioritize diversity of angles and competitors
   const seen = new Set();
-  const ranked = [];
-
-  for (const script of scripts) {
-    const key = `${script.source_competitor}-${script.icp}`;
-    if (!seen.has(key)) {
-      seen.add(key);
-      ranked.push({ ...script, priority: 'high' });
-    } else {
-      ranked.push({ ...script, priority: 'medium' });
-    }
-  }
-
-  return ranked.sort((a, b) => (a.priority === 'high' ? -1 : 1));
+  return scripts.map(script => {
+    const key = `${script.source_competitor}-${script.icp}-${script.format}`;
+    const priority = seen.has(key) ? 'medium' : 'high';
+    seen.add(key);
+    return { ...script, priority };
+  }).sort((a, b) => (a.priority === 'high' ? -1 : 1));
 }
 
-// ─── Extract clean script text from generated output ───
-function extractScriptText(generatedScript) {
-  // Pull out HOOK + BODY + CTA, skip metadata
-  const lines = generatedScript.split('\n');
+function extractScriptText(content) {
+  const lines = content.split('\n');
   const parts = [];
   let capture = false;
 
   for (const line of lines) {
-    if (line.startsWith('HOOK:') || line.startsWith('BODY:') || line.startsWith('CTA:')) {
-      parts.push(line.replace(/^(HOOK|BODY|CTA):\s*/, ''));
+    if (/^(HOOK|BODY|CTA|VOICEOVER|CAPTION):/i.test(line)) {
+      parts.push(line.replace(/^(HOOK|BODY|CTA|VOICEOVER|CAPTION):\s*/i, ''));
       capture = true;
-    } else if (line.startsWith('ANGLE:') || line.startsWith('WHY IT WORKS:')) {
+    } else if (/^(ANGLE|WHY IT WORKS|HASHTAGS|VISUAL DIRECTION|FORMAT|HEADLINE|SUBTEXT|SLIDE|CARD):/i.test(line)) {
       capture = false;
     } else if (capture) {
       parts.push(line);
@@ -96,7 +63,27 @@ function extractScriptText(generatedScript) {
   return parts.join(' ').trim();
 }
 
-// ─── Export for UGC Creators ───
+// ─── Avatar Selection ───
+
+function getAvatarForICP(icpName, avatarConfig) {
+  const mappings = avatarConfig.heygen?.avatar_mappings || [];
+
+  for (const mapping of mappings) {
+    if (icpName.toLowerCase().includes(mapping.icp_pattern.toLowerCase())) {
+      if (mapping.avatar_ids && mapping.avatar_ids.length > 0) {
+        // Random selection from mapped avatars
+        return mapping.avatar_ids[Math.floor(Math.random() * mapping.avatar_ids.length)];
+      }
+    }
+  }
+
+  // Fallback to default
+  const defaults = avatarConfig.heygen?.default_avatar_ids || [];
+  return defaults.length > 0 ? defaults[0] : null;
+}
+
+// ─── UGC Creator Briefs (unchanged from V1) ───
+
 async function exportForCreators(scripts, outputDir) {
   const creatorsDir = path.join(outputDir, 'ugc-creator-briefs');
   fs.mkdirSync(creatorsDir, { recursive: true });
@@ -116,101 +103,296 @@ async function exportForCreators(scripts, outputDir) {
     id: s.id,
     icp: s.icp,
     competitor: s.source_competitor,
-    script: extractScriptText(s.generated_script),
-    notes: `Film in 9:16 vertical. Keep under 45 seconds. Reference competitor ad #${s.source_ad_index} from ${s.source_competitor} for pacing/energy.`,
+    script: extractScriptText(s.generated_content),
+    notes: `Film in 9:16 vertical. Keep under 45 seconds. Ref: ${s.source_competitor} ad #${s.source_ad_index}.`,
   }));
 
   await csvWriter.writeRecords(records);
 
-  // Also save individual briefs as text files
   for (const s of scripts) {
     const briefPath = path.join(creatorsDir, `${s.id}-brief.txt`);
-    const content = `SCRIPT ID: ${s.id}
+    fs.writeFileSync(briefPath, `SCRIPT ID: ${s.id}
 TARGET AUDIENCE: ${s.icp}
 INSPIRED BY: ${s.source_competitor} Ad #${s.source_ad_index}
 
 --- SCRIPT ---
-${extractScriptText(s.generated_script)}
+${extractScriptText(s.generated_content)}
 
 --- FILMING NOTES ---
 - Format: 9:16 vertical video
 - Length: 15-45 seconds
 - Energy: Match the vibe of the reference ad
 - Film in good lighting, phone quality is fine
-- Look at camera, be natural, don't read off a script word-for-word
-`;
-    fs.writeFileSync(briefPath, content);
+- Look at camera, be natural
+`);
   }
 
   return records.length;
 }
 
-// ─── Push to Arcads ───
-async function pushToArcads(scripts, outputDir) {
-  if (!process.env.ARCADS_API_KEY) {
-    console.log('   ⏭️  No ARCADS_API_KEY set — skipping Arcads push');
-    console.log('   📄 Scripts saved for manual upload instead');
+// ─── HeyGen Video Production ───
 
-    // Save scripts as a batch file for manual Arcads upload
-    const manualDir = path.join(outputDir, 'arcads-manual-upload');
+async function produceHeyGenVideos(scripts, avatarConfig, manifest) {
+  if (!process.env.HEYGEN_API_KEY) {
+    console.log('   ⏭️  No HEYGEN_API_KEY — saving scripts for manual video creation');
+    const manualDir = path.join(OUTPUT_DIR, 'heygen-manual');
     fs.mkdirSync(manualDir, { recursive: true });
 
     for (const s of scripts) {
-      const scriptPath = path.join(manualDir, `${s.id}-arcads.txt`);
-      fs.writeFileSync(scriptPath, extractScriptText(s.generated_script));
+      fs.writeFileSync(
+        path.join(manualDir, `${s.id}-heygen.txt`),
+        extractScriptText(s.generated_content)
+      );
+      manifest.push({
+        creative_id: `${s.id}-heygen-manual`,
+        source_script_id: s.id,
+        format: s.format,
+        production_method: 'heygen-manual',
+        icp: s.icp,
+        platform_targets: s.platform_targets,
+        file_path: path.join(manualDir, `${s.id}-heygen.txt`),
+        status: 'manual_upload_needed',
+        published_to: [],
+      });
     }
-
-    return { queued: 0, manual: scripts.length };
+    return;
   }
 
-  const arcads = new ArcadsClient(process.env.ARCADS_API_KEY);
-  const arcadsDir = path.join(outputDir, 'arcads-renders');
-  fs.mkdirSync(arcadsDir, { recursive: true });
-
-  // Get available actors
-  const actors = await arcads.listActors();
-  const actorPool = actors.slice(0, 5); // Use top 5 actors
-
-  console.log(`   🎭 Using ${actorPool.length} Arcads actors`);
+  const heygen = new HeyGenClient(process.env.HEYGEN_API_KEY);
+  const videosDir = path.join(OUTPUT_DIR, 'videos');
+  fs.mkdirSync(videosDir, { recursive: true });
 
   const jobs = [];
 
   for (const script of scripts) {
-    const scriptText = extractScriptText(script.generated_script);
-
-    // Each script → multiple actors
-    for (const actor of actorPool) {
-      try {
-        const video = await arcads.createVideo(scriptText, actor.id);
-        jobs.push({
-          script_id: script.id,
-          actor_id: actor.id,
-          actor_name: actor.name,
-          video_id: video.id,
-          status: 'rendering',
-        });
-        console.log(`   🎬 Queued: ${script.id} × ${actor.name}`);
-      } catch (err) {
-        console.log(`   ❌ Failed: ${script.id} × ${actor.name}: ${err.message}`);
-      }
-
-      // Rate limit
-      await new Promise(r => setTimeout(r, 200));
+    const avatarId = getAvatarForICP(script.icp, avatarConfig);
+    if (!avatarId) {
+      console.log(`   ⚠️  No avatar for ICP "${script.icp}" — skipping ${script.id}`);
+      continue;
     }
+
+    try {
+      const result = await heygen.generateVideo(
+        extractScriptText(script.generated_content),
+        avatarId,
+        { title: `${script.id} — ${script.icp}` }
+      );
+
+      const entry = {
+        creative_id: `${script.id}-heygen-${avatarId}`,
+        source_script_id: script.id,
+        format: script.format,
+        production_method: 'heygen',
+        avatar_id: avatarId,
+        icp: script.icp,
+        platform_targets: script.platform_targets,
+        video_id: result.video_id,
+        status: 'processing',
+        published_to: [],
+      };
+
+      jobs.push(entry);
+      manifest.push(entry);
+      console.log(`   🎬 Queued: ${script.id} → avatar ${avatarId}`);
+    } catch (err) {
+      console.log(`   ❌ HeyGen failed for ${script.id}: ${err.message}`);
+    }
+
+    await new Promise(r => setTimeout(r, 200));
   }
 
-  // Save job manifest
-  fs.writeFileSync(
-    path.join(arcadsDir, 'render-jobs.json'),
-    JSON.stringify({ queued_at: new Date().toISOString(), jobs }, null, 2)
-  );
-
-  return { queued: jobs.length, manual: 0 };
+  // Save jobs manifest for status checking later
+  if (jobs.length > 0) {
+    fs.writeFileSync(
+      path.join(videosDir, 'heygen-jobs.json'),
+      JSON.stringify({ queued_at: new Date().toISOString(), jobs }, null, 2)
+    );
+  }
 }
 
+// ─── Argil Clone Production ───
+
+async function produceArgilCloneVideos(scripts, avatarConfig, manifest) {
+  const cloneId = avatarConfig.argil?.clone_id;
+  if (!cloneId || !process.env.ARGIL_API_KEY) {
+    console.log('   ⏭️  No Argil clone configured — skipping personal clone videos');
+    return;
+  }
+
+  const argil = new ArgilClient(process.env.ARGIL_API_KEY);
+  const maxClone = avatarConfig.argil?.max_per_cycle || 10;
+  const cloneScripts = scripts.slice(0, maxClone);
+
+  console.log(`   🧬 Creating ${cloneScripts.length} personal clone videos (max: ${maxClone})`);
+
+  for (const script of cloneScripts) {
+    try {
+      const result = await argil.generateVideo(
+        extractScriptText(script.generated_content),
+        cloneId,
+        { title: `Clone: ${script.id}` }
+      );
+
+      manifest.push({
+        creative_id: `${script.id}-argil-clone`,
+        source_script_id: script.id,
+        format: script.format,
+        production_method: 'argil',
+        clone_id: cloneId,
+        icp: script.icp,
+        platform_targets: script.platform_targets,
+        video_id: result.video_id,
+        status: 'processing',
+        published_to: [],
+      });
+
+      console.log(`   🧬 Queued clone: ${script.id}`);
+    } catch (err) {
+      console.log(`   ❌ Argil failed for ${script.id}: ${err.message}`);
+    }
+
+    await new Promise(r => setTimeout(r, 200));
+  }
+}
+
+// ─── Static Image Production ───
+
+async function produceImages(scripts, format, manifest) {
+  let puppeteer;
+  try {
+    puppeteer = require('puppeteer');
+  } catch {
+    console.log('   ⚠️  Puppeteer not installed — saving raw content instead');
+    console.log('   Run: npm install puppeteer');
+    saveTextOnly(scripts, format, manifest);
+    return;
+  }
+
+  const imagesDir = path.join(OUTPUT_DIR, 'images', format);
+  fs.mkdirSync(imagesDir, { recursive: true });
+
+  const browser = await puppeteer.launch({ headless: 'new' });
+
+  try {
+    for (const script of scripts) {
+      try {
+        if (format === 'screenshot-static') {
+          const data = parseScreenshotContent(script.generated_content);
+          const html = buildScreenshotHTML(data);
+          const outputPath = path.join(imagesDir, `${script.id}.png`);
+          await renderHTMLToPNG(browser, html, outputPath);
+
+          manifest.push({
+            creative_id: `${script.id}-image`,
+            source_script_id: script.id,
+            format,
+            production_method: 'puppeteer',
+            icp: script.icp,
+            platform_targets: script.platform_targets,
+            file_path: outputPath,
+            status: 'ready',
+            published_to: [],
+          });
+
+          console.log(`   🖼️  Rendered: ${script.id}.png`);
+
+        } else if (format === 'carousel') {
+          const slides = parseCarouselContent(script.generated_content);
+          const slideDir = path.join(imagesDir, script.id);
+          fs.mkdirSync(slideDir, { recursive: true });
+
+          const slidePaths = [];
+          for (let i = 0; i < slides.length; i++) {
+            const html = buildCarouselSlideHTML(slides[i], i + 1, slides.length, i === 0, i === slides.length - 1);
+            const slidePath = path.join(slideDir, `slide-${i + 1}.png`);
+            await renderHTMLToPNG(browser, html, slidePath);
+            slidePaths.push(slidePath);
+          }
+
+          manifest.push({
+            creative_id: `${script.id}-carousel`,
+            source_script_id: script.id,
+            format,
+            production_method: 'puppeteer',
+            icp: script.icp,
+            platform_targets: script.platform_targets,
+            file_path: slideDir,
+            slide_paths: slidePaths,
+            slide_count: slides.length,
+            status: 'ready',
+            published_to: [],
+          });
+
+          console.log(`   🖼️  Rendered: ${script.id} (${slides.length} slides)`);
+
+        } else if (format === 'text-overlay') {
+          const cards = parseTextOverlayContent(script.generated_content);
+          const cardDir = path.join(imagesDir, script.id);
+          fs.mkdirSync(cardDir, { recursive: true });
+
+          const cardPaths = [];
+          for (let i = 0; i < cards.length; i++) {
+            const html = buildTextOverlayCardHTML(cards[i], i);
+            const cardPath = path.join(cardDir, `card-${i + 1}.png`);
+            await renderHTMLToPNG(browser, html, cardPath, { width: 1080, height: 1920 });
+            cardPaths.push(cardPath);
+          }
+
+          manifest.push({
+            creative_id: `${script.id}-overlay`,
+            source_script_id: script.id,
+            format,
+            production_method: 'puppeteer',
+            icp: script.icp,
+            platform_targets: script.platform_targets,
+            file_path: cardDir,
+            card_paths: cardPaths,
+            card_count: cards.length,
+            status: 'ready',
+            published_to: [],
+          });
+
+          console.log(`   🖼️  Rendered: ${script.id} (${cards.length} cards)`);
+        }
+      } catch (err) {
+        console.log(`   ❌ Failed to render ${script.id}: ${err.message}`);
+      }
+    }
+  } finally {
+    await browser.close();
+  }
+}
+
+// ─── Text-Only Formats ───
+
+function saveTextOnly(scripts, format, manifest) {
+  const textDir = path.join(OUTPUT_DIR, 'text', format);
+  fs.mkdirSync(textDir, { recursive: true });
+
+  for (const script of scripts) {
+    const filePath = path.join(textDir, `${script.id}.txt`);
+    fs.writeFileSync(filePath, script.generated_content);
+
+    manifest.push({
+      creative_id: `${script.id}-text`,
+      source_script_id: script.id,
+      format,
+      production_method: 'text',
+      icp: script.icp,
+      platform_targets: script.platform_targets,
+      file_path: filePath,
+      content: script.generated_content,
+      status: 'ready',
+      published_to: [],
+    });
+  }
+}
+
+// ─── Main ───
+
 async function main() {
-  console.log('🤖 EDDIE — Phase 4: Creative Production');
-  console.log('='.repeat(50));
+  console.log('🤖 EDDIE V2 — Phase 4: Multi-Format Creative Production');
+  console.log('='.repeat(60));
 
   if (!fs.existsSync(SCRIPTS_PATH)) {
     console.error('❌ No scripts found. Run phase 3 first: npm run phase3:generate');
@@ -218,46 +400,106 @@ async function main() {
   }
 
   const data = JSON.parse(fs.readFileSync(SCRIPTS_PATH, 'utf8'));
-  const ranked = rankScripts(data.scripts);
+  const avatarConfig = JSON.parse(fs.readFileSync(AVATAR_CONFIG_PATH, 'utf8'));
+  const manifest = [];
 
-  console.log(`📊 Loaded ${ranked.length} scripts`);
+  console.log(`📊 Loaded ${data.total_scripts} scripts across ${data.formats_used?.length || 1} formats\n`);
 
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
-  // Split: top scripts → UGC creators, rest → Arcads
-  const ugcScripts = ranked.slice(0, UGC_COUNT);
-  const arcadsScripts = ranked.slice(UGC_COUNT);
-
-  console.log(`\n👤 UGC Creator Briefs: ${ugcScripts.length} scripts`);
-  const ugcCount = await exportForCreators(ugcScripts, OUTPUT_DIR);
-  console.log(`   ✅ Exported ${ugcCount} briefs to data/creatives/ugc-creator-briefs/`);
-
-  console.log(`\n🤖 Arcads AI Actors: ${arcadsScripts.length} scripts`);
-  const arcadsResult = await pushToArcads(arcadsScripts, OUTPUT_DIR);
-
-  if (arcadsResult.queued > 0) {
-    console.log(`   ✅ Queued ${arcadsResult.queued} renders on Arcads`);
-  }
-  if (arcadsResult.manual > 0) {
-    console.log(`   📄 ${arcadsResult.manual} scripts saved for manual upload`);
+  // Group scripts by format
+  const byFormat = {};
+  for (const script of data.scripts) {
+    const fmt = script.format || 'ugc-video';
+    if (!byFormat[fmt]) byFormat[fmt] = [];
+    byFormat[fmt].push(script);
   }
 
-  // Summary
+  // ── Process UGC Video Scripts ──
+  if (byFormat['ugc-video']) {
+    const ranked = rankScripts(byFormat['ugc-video']);
+    const ugcCount = avatarConfig.ugc_creators?.top_n || 15;
+    const ugcScripts = ranked.slice(0, ugcCount);
+    const videoScripts = ranked.slice(ugcCount);
+
+    // UGC Creator briefs
+    console.log(`👤 UGC Creator Briefs: ${ugcScripts.length} scripts`);
+    const briefCount = await exportForCreators(ugcScripts, OUTPUT_DIR);
+    for (const s of ugcScripts) {
+      manifest.push({
+        creative_id: `${s.id}-ugc-brief`,
+        source_script_id: s.id,
+        format: 'ugc-video',
+        production_method: 'ugc-creator',
+        icp: s.icp,
+        platform_targets: s.platform_targets || ['facebook', 'instagram', 'tiktok'],
+        status: 'brief_exported',
+        published_to: [],
+      });
+    }
+    console.log(`   ✅ Exported ${briefCount} briefs\n`);
+
+    // Argil clone videos (top scripts from video pool)
+    console.log(`🧬 Argil Personal Clone Videos:`);
+    await produceArgilCloneVideos(videoScripts, avatarConfig, manifest);
+    console.log('');
+
+    // HeyGen avatar videos (remaining)
+    const argilMax = avatarConfig.argil?.max_per_cycle || 10;
+    const heygenScripts = videoScripts.slice(argilMax);
+    console.log(`🤖 HeyGen Avatar Videos: ${heygenScripts.length} scripts`);
+    await produceHeyGenVideos(heygenScripts, avatarConfig, manifest);
+    console.log('');
+  }
+
+  // ── Process Image Formats ──
+  for (const imgFormat of ['screenshot-static', 'carousel', 'text-overlay']) {
+    if (byFormat[imgFormat] && byFormat[imgFormat].length > 0) {
+      console.log(`🖼️  ${imgFormat}: ${byFormat[imgFormat].length} pieces`);
+      await produceImages(byFormat[imgFormat], imgFormat, manifest);
+      console.log('');
+    }
+  }
+
+  // ── Process Text-Only Formats ──
+  for (const txtFormat of ['linkedin-post', 'short-caption', 'broll-script']) {
+    if (byFormat[txtFormat] && byFormat[txtFormat].length > 0) {
+      console.log(`📝 ${txtFormat}: ${byFormat[txtFormat].length} pieces`);
+      saveTextOnly(byFormat[txtFormat], txtFormat, manifest);
+      console.log(`   ✅ Saved ${byFormat[txtFormat].length} text files\n`);
+    }
+  }
+
+  // ── Write Production Manifest ──
+  const manifestPath = path.join(OUTPUT_DIR, 'production-manifest.json');
   const summary = {
-    generated_at: new Date().toISOString(),
-    total_scripts: ranked.length,
-    ugc_briefs: ugcCount,
-    arcads_queued: arcadsResult.queued,
-    arcads_manual: arcadsResult.manual,
-    estimated_total_creatives: ugcCount + (arcadsResult.queued || arcadsResult.manual) * 5,
+    produced_at: new Date().toISOString(),
+    total_creatives: manifest.length,
+    by_method: {},
+    by_format: {},
+    by_status: {},
   };
 
-  fs.writeFileSync(path.join(OUTPUT_DIR, 'production-summary.json'), JSON.stringify(summary, null, 2));
+  for (const item of manifest) {
+    summary.by_method[item.production_method] = (summary.by_method[item.production_method] || 0) + 1;
+    summary.by_format[item.format] = (summary.by_format[item.format] || 0) + 1;
+    summary.by_status[item.status] = (summary.by_status[item.status] || 0) + 1;
+  }
 
-  console.log(`\n${'='.repeat(50)}`);
-  console.log(`✅ Production complete`);
-  console.log(`   📹 Estimated total creatives: ${summary.estimated_total_creatives}`);
-  console.log(`\n👉 Next: Run ads on Meta, then: npm run phase5:optimize`);
+  fs.writeFileSync(manifestPath, JSON.stringify({ summary, creatives: manifest }, null, 2));
+
+  // ── Summary ──
+  console.log(`${'='.repeat(60)}`);
+  console.log('✅ PRODUCTION COMPLETE');
+  console.log(`${'='.repeat(60)}`);
+  console.log(`📊 Total creatives: ${manifest.length}`);
+
+  for (const [method, count] of Object.entries(summary.by_method)) {
+    console.log(`   ${method}: ${count}`);
+  }
+
+  console.log(`📄 Manifest: ${manifestPath}`);
+  console.log(`\n👉 Next: npm run phase6:queue (build publish schedule)`);
 }
 
 main().catch(err => {

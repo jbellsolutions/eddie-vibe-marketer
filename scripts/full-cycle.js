@@ -1,11 +1,16 @@
 #!/usr/bin/env node
 /**
- * FULL CYCLE: Runs all 5 phases in sequence
- * Phase 1: Research → Phase 3: Generate → Phase 4: Produce → Phase 5: Optimize
- * (Phase 2 is brand voice setup — done once manually)
+ * FULL CYCLE V2: Runs all phases in sequence
  *
- * If learnings exist from a previous cycle, they're automatically
- * loaded into the generation phase to bias toward winning patterns.
+ * Phase 1:   Research (scrape + transcribe competitor ads)
+ * Phase 3:   Generate (multi-format content with Titan DNA)
+ * Phase 3.5: Quality Gate (batch review against writing rules)
+ * Phase 4:   Produce (HeyGen + Argil + images + text)
+ * Phase 6a:  Build Publish Queue (schedule posts across platforms)
+ *
+ * Phase 2 (brand voice setup) is one-time manual.
+ * Phase 5 (optimize) runs separately after ads collect performance data.
+ * Phase 6b (publish) runs separately via cron or manual trigger.
  */
 
 const { execSync } = require('child_process');
@@ -33,7 +38,7 @@ function run(cmd, label) {
 }
 
 function main() {
-  console.log('🤖 EDDIE — Full Cycle Run');
+  console.log('🤖 EDDIE V2 — Full Cycle Run');
   console.log('='.repeat(60));
 
   // Check for previous learnings
@@ -42,6 +47,8 @@ function main() {
     console.log('📚 Previous cycle learnings detected:');
     console.log(`   Winners from last cycle: ${learnings.cycle_stats?.winners_identified || 0}`);
     console.log(`   Best ICPs: ${learnings.next_cycle_instructions?.double_down_on_icps?.join(', ') || 'N/A'}`);
+    console.log(`   Best formats: ${learnings.winning_patterns?.best_formats?.map(f => f[0]).join(', ') || 'N/A'}`);
+    console.log(`   Best platforms: ${learnings.winning_patterns?.best_platforms?.map(p => p[0]).join(', ') || 'N/A'}`);
     console.log('   → These will influence script generation');
   } else {
     console.log('📝 First cycle — no previous learnings');
@@ -52,11 +59,17 @@ function main() {
   // Phase 1: Research
   if (!run('ad-research.js', 'PHASE 1: Competitor Ad Research')) return;
 
-  // Phase 3: Generate (Phase 2 is manual brand voice setup)
-  if (!run('generate-scripts.js', 'PHASE 3: Script Generation')) return;
+  // Phase 3: Generate (multi-format with Titan DNA)
+  if (!run('generate-scripts.js', 'PHASE 3: Multi-Format Content Generation')) return;
+
+  // Phase 3.5: Quality Gate
+  if (!run('quality-gate.js', 'PHASE 3.5: Quality Gate Review')) return;
 
   // Phase 4: Produce
-  if (!run('produce-creatives.js', 'PHASE 4: Creative Production')) return;
+  if (!run('produce-creatives.js', 'PHASE 4: Multi-Format Creative Production')) return;
+
+  // Phase 6a: Build Publish Queue
+  if (!run('build-publish-queue.js', 'PHASE 6a: Build Publish Queue')) return;
 
   const elapsed = Math.round((Date.now() - startTime) / 1000);
 
@@ -66,13 +79,17 @@ function main() {
   console.log(`⏱️  Total time: ${Math.floor(elapsed / 60)}m ${elapsed % 60}s`);
   console.log('');
   console.log('📋 What to do now:');
-  console.log('   1. Review UGC briefs in data/creatives/ugc-creator-briefs/');
-  console.log('   2. Send top scripts to your creators');
-  console.log('   3. Upload Arcads scripts (or check auto-renders)');
-  console.log('   4. Launch ads on Meta');
-  console.log('   5. Wait 7-14 days for performance data');
-  console.log('   6. Run: npm run phase5:optimize');
-  console.log('   7. Run: npm run full-cycle (for next iteration)');
+  console.log('   1. Review content in data/generated-scripts/by-format/');
+  console.log('   2. Review quality report: data/generated-scripts/quality-report.json');
+  console.log('   3. Send UGC briefs to creators: data/creatives/ugc-creator-briefs/');
+  console.log('   4. Check HeyGen/Argil video renders (if API keys configured)');
+  console.log('   5. Review publish queue: data/publish-queue.json');
+  console.log('   6. Start publishing: npm run phase6:publish');
+  console.log('   7. Or dry run first: npm run phase6:publish -- --dry-run');
+  console.log('');
+  console.log('📈 After 7-14 days of performance data:');
+  console.log('   npm run phase5:optimize');
+  console.log('   npm run full-cycle');
   console.log('');
   console.log('🔄 Each cycle gets smarter based on what won last time.');
 }

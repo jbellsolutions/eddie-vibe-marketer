@@ -1,23 +1,30 @@
 #!/usr/bin/env node
 /**
- * PHASE 3: Script Generation
+ * PHASE 3: Multi-Format Content Generation
+ *
  * - Loads competitor research from Phase 1
  * - Loads brand voice files (voice.md, product.md, icp.md, writing-rules.md)
- * - For each competitor ad: generates a rewrite in your brand voice
- * - Multiplies each rewrite by each ICP for maximum variations
- * - Outputs all scripts to data/generated-scripts/
+ * - Loads Titan agent definitions for copywriting DNA injection
+ * - For each competitor ad × each ICP × each enabled format:
+ *   generates content using format-specific prompts + Titan style influence
+ * - Tiered generation: Tier 1 = all ads, Tier 2 = top 50%, Tier 3 = top 20%
+ * - Outputs to data/generated-scripts/by-format/{format}/
  */
 
-const Anthropic = require('@anthropic-ai/sdk');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+
+const { generateContent, createClient } = require('./lib/generator');
+const { getEnabledFormats, FORMAT_DEFINITIONS } = require('./lib/formats');
+const { listAgents, getAgentsForFormat } = require('./lib/titan-router');
 
 const ROOT = path.resolve(__dirname, '..');
 const RESEARCH_PATH = path.join(ROOT, 'data', 'competitor-research', 'research-summary.json');
 const OUTPUT_DIR = path.join(ROOT, 'data', 'generated-scripts');
 
-// Load brand voice files
+// ─── Brand Voice Loading ───
+
 function loadBrandVoice() {
   const files = ['writing-rules.md', 'voice.md', 'product.md', 'icp.md'];
   const voice = {};
@@ -28,7 +35,6 @@ function loadBrandVoice() {
   return voice;
 }
 
-// Parse ICPs from icp.md into individual profiles
 function parseICPs(icpContent) {
   const icps = [];
   const sections = icpContent.split(/^## ICP \d+:/m).filter(s => s.trim());
@@ -43,7 +49,6 @@ function parseICPs(icpContent) {
     }
   }
 
-  // If parsing fails, treat whole file as one ICP
   if (icps.length === 0) {
     icps.push({ name: 'Default', content: icpContent });
   }
@@ -51,57 +56,20 @@ function parseICPs(icpContent) {
   return icps;
 }
 
-async function generateScript(client, competitorAd, brandVoice, icp) {
-  const systemPrompt = `You are Eddie, an expert ad scriptwriter. You write video ad scripts for social media (15-60 seconds).
+// ─── Tiered Ad Selection ───
 
-CRITICAL RULES — loaded from writing-rules.md:
-${brandVoice['writing-rules']}
-
-BRAND VOICE — how we sound:
-${brandVoice.voice}
-
-PRODUCT — what we're selling:
-${brandVoice.product}
-
-TARGET AUDIENCE for this variation:
-${icp.content}`;
-
-  const userPrompt = `Here is a competitor's video ad that's performing well:
-
-COMPETITOR: ${competitorAd.competitor}
-HOOK: ${competitorAd.hook}
-FULL TRANSCRIPT: ${competitorAd.full_transcript}
-BODY COPY: ${competitorAd.body_copy}
-HEADLINE: ${competitorAd.headline}
-CTA: ${competitorAd.cta}
-
-Write a NEW original ad script for OUR product that:
-1. Uses the same ANGLE and STRUCTURE as this competitor ad (what made it work)
-2. Is written entirely in OUR brand voice
-3. Speaks directly to this ICP: ${icp.name}
-4. Follows every rule in writing-rules.md (no AI slop, no banned words)
-5. Is 15-45 seconds when read aloud (roughly 40-120 words)
-
-Output format:
-HOOK: [first 3 seconds — must create curiosity or tension]
-BODY: [main script]
-CTA: [call to action — what to do next]
-ANGLE: [1 sentence — what psychological angle this uses]
-WHY IT WORKS: [1 sentence — why this structure converts]`;
-
-  const response = await client.messages.create({
-    model: process.env.CLAUDE_MODEL || 'claude-haiku-4-5-20251001',
-    max_tokens: 1024,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt }],
-  });
-
-  return response.content[0].text;
+function getAdsForTier(ads, tier) {
+  if (tier === 1) return ads;
+  if (tier === 2) return ads.slice(0, Math.ceil(ads.length * 0.5));
+  if (tier === 3) return ads.slice(0, Math.ceil(ads.length * 0.2));
+  return ads;
 }
 
+// ─── Main ───
+
 async function main() {
-  console.log('🤖 EDDIE — Phase 3: Script Generation');
-  console.log('='.repeat(50));
+  console.log('🤖 EDDIE V2 — Phase 3: Multi-Format Content Generation');
+  console.log('='.repeat(60));
 
   // Check research exists
   if (!fs.existsSync(RESEARCH_PATH)) {
@@ -112,51 +80,111 @@ async function main() {
   const research = JSON.parse(fs.readFileSync(RESEARCH_PATH, 'utf8'));
   const brandVoice = loadBrandVoice();
   const icps = parseICPs(brandVoice.icp);
+  const enabledFormats = getEnabledFormats();
 
-  console.log(`📊 Loaded ${research.ads.length} competitor ads`);
+  // Sort ads by longevity (oldest start date = longest running = best proxy)
+  const sortedAds = [...research.ads].sort((a, b) => {
+    const dateA = new Date(a.started_running || 0);
+    const dateB = new Date(b.started_running || 0);
+    return dateA - dateB;
+  });
+
+  // Print setup summary
+  console.log(`📊 Loaded ${sortedAds.length} competitor ads`);
   console.log(`🎯 Loaded ${icps.length} ICPs: ${icps.map(i => i.name).join(', ')}`);
-  console.log(`📝 Total scripts to generate: ${research.ads.length} × ${icps.length} = ${research.ads.length * icps.length}`);
-  console.log('');
+  console.log(`📝 Enabled formats: ${enabledFormats.length}`);
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  // Show Titan agents loaded
+  const agents = listAgents();
+  console.log(`🧬 Titan Genome: ${agents.length} copywriter agents loaded`);
+
+  // Calculate total generation count
+  let totalCount = 0;
+  const formatCounts = {};
+  for (const format of enabledFormats) {
+    const tier = FORMAT_DEFINITIONS[format].tier;
+    const adsForTier = getAdsForTier(sortedAds, tier);
+    const count = adsForTier.length * icps.length;
+    formatCounts[format] = count;
+    totalCount += count;
+  }
+
+  console.log('\n📋 Generation plan:');
+  for (const format of enabledFormats) {
+    const def = FORMAT_DEFINITIONS[format];
+    const titanAgents = getAgentsForFormat(format);
+    const titanNames = titanAgents.map(a => a.display_name).join(' + ');
+    console.log(`   ${format} (Tier ${def.tier}): ${formatCounts[format]} pieces → ${titanNames}`);
+  }
+  console.log(`   TOTAL: ${totalCount} content pieces\n`);
+
+  const client = createClient();
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
   const allScripts = [];
-  let count = 0;
-  const total = research.ads.length * icps.length;
+  const byFormat = {};
+  let globalCount = 0;
 
-  for (const ad of research.ads) {
-    for (const icp of icps) {
-      count++;
-      console.log(`[${count}/${total}] ${ad.competitor} Ad #${ad.ad_index} × ${icp.name}`);
+  for (const format of enabledFormats) {
+    const def = FORMAT_DEFINITIONS[format];
+    const tier = def.tier;
+    const adsForTier = getAdsForTier(sortedAds, tier);
 
-      try {
-        const script = await generateScript(client, ad, brandVoice, icp);
+    const formatDir = path.join(OUTPUT_DIR, 'by-format', format);
+    fs.mkdirSync(formatDir, { recursive: true });
 
-        const entry = {
-          id: `script-${count}`,
-          source_competitor: ad.competitor,
-          source_ad_index: ad.ad_index,
-          source_hook: ad.hook,
-          icp: icp.name,
-          generated_script: script,
-          generated_at: new Date().toISOString(),
-        };
+    const formatScripts = [];
+    const formatTotal = adsForTier.length * icps.length;
+    let formatCount = 0;
 
-        allScripts.push(entry);
+    console.log(`\n${'─'.repeat(60)}`);
+    console.log(`📝 ${def.name} (Tier ${tier}) — ${formatTotal} pieces`);
+    console.log(`${'─'.repeat(60)}`);
 
-        // Save individual script
-        const filename = `script-${count}-${ad.competitor.replace(/\s+/g, '-').toLowerCase()}-${icp.name.replace(/\s+/g, '-').toLowerCase()}.json`;
-        fs.writeFileSync(path.join(OUTPUT_DIR, filename), JSON.stringify(entry, null, 2));
+    for (const ad of adsForTier) {
+      for (const icp of icps) {
+        globalCount++;
+        formatCount++;
+        const id = `${format}-${String(globalCount).padStart(3, '0')}`;
 
-        console.log(`   ✅ Generated`);
-      } catch (err) {
-        console.log(`   ❌ Failed: ${err.message}`);
+        console.log(`[${formatCount}/${formatTotal}] ${ad.competitor} Ad #${ad.ad_index} × ${icp.name}`);
+
+        try {
+          const content = await generateContent(client, ad, brandVoice, icp, format);
+
+          const titanAgents = getAgentsForFormat(format);
+
+          const entry = {
+            id,
+            format,
+            source_competitor: ad.competitor,
+            source_ad_index: ad.ad_index,
+            source_hook: ad.hook,
+            icp: icp.name,
+            titan_agents_used: titanAgents.map(a => a.agent_key),
+            platform_targets: def.platforms,
+            generated_content: content,
+            generated_at: new Date().toISOString(),
+          };
+
+          allScripts.push(entry);
+          formatScripts.push(entry);
+
+          // Save individual file
+          const filename = `${id}-${ad.competitor.replace(/\s+/g, '-').toLowerCase()}-${icp.name.replace(/\s+/g, '-').toLowerCase()}.json`;
+          fs.writeFileSync(path.join(formatDir, filename), JSON.stringify(entry, null, 2));
+
+          console.log(`   ✅ Generated (${id})`);
+        } catch (err) {
+          console.log(`   ❌ Failed: ${err.message}`);
+        }
+
+        // Rate limiting
+        await new Promise(r => setTimeout(r, 300));
       }
-
-      // Rate limiting — small delay between calls
-      await new Promise(r => setTimeout(r, 500));
     }
+
+    byFormat[format] = formatScripts.length;
   }
 
   // Write master scripts file
@@ -164,15 +192,24 @@ async function main() {
   fs.writeFileSync(masterPath, JSON.stringify({
     generated_at: new Date().toISOString(),
     total_scripts: allScripts.length,
-    competitor_ads_used: research.ads.length,
+    competitor_ads_used: sortedAds.length,
     icps_used: icps.map(i => i.name),
+    formats_used: enabledFormats,
+    by_format: byFormat,
     scripts: allScripts,
   }, null, 2));
 
-  console.log(`\n${'='.repeat(50)}`);
-  console.log(`✅ Generated ${allScripts.length} script variations`);
-  console.log(`📄 Saved to: ${masterPath}`);
-  console.log(`\n👉 Next: npm run phase4:produce`);
+  // Print summary
+  console.log(`\n${'='.repeat(60)}`);
+  console.log('✅ GENERATION COMPLETE');
+  console.log(`${'='.repeat(60)}`);
+  console.log(`📊 Total content pieces: ${allScripts.length}`);
+  for (const [fmt, count] of Object.entries(byFormat)) {
+    console.log(`   ${fmt}: ${count}`);
+  }
+  console.log(`📄 Master file: ${masterPath}`);
+  console.log(`📁 By format: ${path.join(OUTPUT_DIR, 'by-format/')}`);
+  console.log(`\n👉 Next: npm run phase3:quality (optional) then npm run phase4:produce`);
 }
 
 main().catch(err => {

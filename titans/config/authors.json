@@ -1,0 +1,166 @@
+{
+  "authors": [
+    {
+      "key": "alex_hormozi",
+      "display_name": "Alex Hormozi",
+      "emails": ["value@acquisition.com"],
+      "domains": ["acquisition.com"],
+      "specialties": ["offers", "scaling", "value equations", "business growth"],
+      "best_for": ["offer breakdowns", "tactical value emails", "direct lessons"],
+      "style_traits": ["direct", "framework-heavy", "no-fluff", "short subject lines"]
+    },
+    {
+      "key": "bill_mueller",
+      "display_name": "Bill Mueller",
+      "emails": ["bill@storysalesmachine.com"],
+      "domains": ["storysalesmachine.com"],
+      "specialties": ["storytelling", "email sequences", "narrative selling", "curiosity"],
+      "best_for": ["story-led emails", "curiosity hooks", "email critiques"],
+      "style_traits": ["story-driven", "curiosity-first", "question-led", "narrative"]
+    },
+    {
+      "key": "brian_kurtz",
+      "display_name": "Brian Kurtz",
+      "emails": ["brian@briankurtz.net"],
+      "domains": ["briankurtz.net"],
+      "specialties": ["direct response", "relationship building", "marketing history", "lifetime value"],
+      "best_for": ["nurture", "authority building", "industry-insider stories"],
+      "style_traits": ["relational", "insider", "story-backed", "classic direct response"]
+    },
+    {
+      "key": "eugene_schwartz",
+      "display_name": "Eugene Schwartz",
+      "emails": [],
+      "domains": [],
+      "specialties": ["direct response", "market sophistication", "headline architecture", "desire stages"],
+      "best_for": ["long-form sales copy", "headline ideation", "market awareness strategy"],
+      "style_traits": ["market-aware", "intensity-driven", "classic direct response", "research-heavy"]
+    },
+    {
+      "key": "jay_abraham",
+      "display_name": "Jay Abraham",
+      "emails": ["jay@abraham.com", "jaipremium@substack.com"],
+      "domains": ["abraham.com"],
+      "specialties": ["strategy", "leverage", "growth", "partnerships"],
+      "best_for": ["long-form value", "strategic thinking", "premium positioning"],
+      "style_traits": ["strategic", "value-dense", "long-form", "you-focused"]
+    },
+    {
+      "key": "jon_buchan",
+      "display_name": "Jon Buchan",
+      "emails": ["jon@charm-offensive.co.uk"],
+      "domains": ["charm-offensive.co.uk"],
+      "specialties": ["cold email", "personality-driven outreach", "humor", "pattern interrupts"],
+      "best_for": ["cold outreach", "quirky offers", "personality-rich email"],
+      "style_traits": ["playful", "quirky", "charming", "unorthodox"]
+    },
+    {
+      "key": "lead_gen_jay",
+      "display_name": "Lead Gen Jay",
+      "emails": ["jay@leadgenjay.com"],
+      "domains": ["leadgenjay.com", "web.leadgenjay.com"],
+      "specialties": ["lead generation", "cold email", "B2B outbound", "growth systems"],
+      "best_for": ["lead-gen tactics", "prospecting systems", "practical frameworks"],
+      "style_traits": ["practical", "growth-focused", "tactical", "modern outbound"]
+    },
+    {
+      "key": "liam_ottley",
+      "display_name": "Liam Ottley",
+      "emails": ["admin@liamottley.com"],
+      "domains": ["liamottley.com"],
+      "specialties": ["AI agencies", "automation", "operators", "systems"],
+      "best_for": ["AI offers", "automation angles", "modern agency content"],
+      "style_traits": ["tech-forward", "modern", "concise", "builder-oriented"]
+    },
+    {
+      "key": "todd_brown",
+      "display_name": "Todd Brown",
+      "emails": ["support@marketingfunnelautomation.com"],
+      "domains": ["toddbrown.me", "marketingfunnelautomation.com"],
+      "specialties": ["funnels", "mechanisms", "E5 method", "marketing education"],
+      "best_for": ["mechanism reveals", "funnel messaging", "launch education"],
+      "style_traits": ["mechanism-led", "strategic", "funnel-oriented", "launch-aware"]
+    },
+    {
+      "key": "tom_bilyeu",
+      "display_name": "Tom Bilyeu",
+      "emails": ["tombilyeu@impacttheory.com"],
+      "domains": ["impacttheory.com", "impacttheoryuniversity.com"],
+      "specialties": ["mindset", "motivation", "personal development", "impact"],
+      "best_for": ["mindset content", "belief shifts", "inspirational angles"],
+      "style_traits": ["mindset-driven", "inspirational", "personal", "lowercase-friendly"]
+    },
+    {
+      "key": "perry_marshall",
+      "display_name": "Perry Marshall",
+      "emails": [],
+      "domains": ["perrymarshall.com"],
+      "specialties": ["80/20 principle", "Google Ads", "traffic", "market selection", "simplification"],
+      "best_for": ["traffic strategy", "market selection frameworks", "80/20 analysis", "business simplification"],
+      "style_traits": ["analytical", "framework-driven", "contrarian", "science-backed"]
+    },
+    {
+      "key": "joe_sugarman",
+      "display_name": "Joe Sugarman",
+      "emails": [],
+      "domains": [],
+      "specialties": ["direct response print", "long-form ads", "storytelling", "product launches"],
+      "best_for": ["print ad copy", "product storytelling", "curiosity-driven long copy"],
+      "style_traits": ["conversational", "detail-rich", "curiosity-driven", "classic direct response"]
+    },
+    {
+      "key": "ken_mccarthy",
+      "display_name": "Ken McCarthy",
+      "emails": [],
+      "domains": [],
+      "specialties": ["internet marketing history", "early online advertising", "direct response online"],
+      "best_for": ["internet marketing fundamentals", "advertising history", "online direct response"],
+      "style_traits": ["pioneer", "historical", "foundational", "systems-thinker"]
+    },
+    {
+      "key": "fred_catona",
+      "display_name": "Fred Catona",
+      "emails": [],
+      "domains": [],
+      "specialties": ["radio advertising", "direct response radio", "media buying", "infomercials"],
+      "best_for": ["radio copy", "media buying strategy", "broadcast direct response"],
+      "style_traits": ["broadcast-oriented", "results-driven", "media-savvy", "entrepreneurial"]
+    },
+    {
+      "key": "greg_renker",
+      "display_name": "Greg Renker",
+      "emails": [],
+      "domains": [],
+      "specialties": ["infomercials", "television direct response", "celebrity endorsements", "scaling"],
+      "best_for": ["TV direct response", "infomercial strategy", "celebrity-driven campaigns"],
+      "style_traits": ["television-native", "scale-focused", "brand-building", "classic direct response"]
+    },
+    {
+      "key": "dan_kennedy",
+      "display_name": "Dan Kennedy",
+      "emails": [],
+      "domains": ["nobsinnercircle.com"],
+      "specialties": ["direct response", "info marketing", "sales letters", "magnetic marketing"],
+      "best_for": ["sales letters", "direct mail", "info product launches", "no BS marketing strategy"],
+      "style_traits": ["no-nonsense", "contrarian", "long-form", "aggressive"]
+    },
+    {
+      "key": "gary_bencivenga",
+      "display_name": "Gary Bencivenga",
+      "emails": [],
+      "domains": [],
+      "specialties": ["direct mail", "headline writing", "controls", "A/B testing"],
+      "best_for": ["headline craft", "control-beating copy", "direct mail mastery"],
+      "style_traits": ["precise", "research-intensive", "classic direct response", "master craftsman"]
+    },
+    {
+      "key": "gordon_grossman",
+      "display_name": "Gordon Grossman",
+      "emails": [],
+      "domains": [],
+      "specialties": ["direct mail", "subscription marketing", "magazine promotions", "list strategy"],
+      "best_for": ["subscription copy", "direct mail packages", "list segmentation"],
+      "style_traits": ["methodical", "data-driven", "classic direct response", "list-focused"]
+    }
+  ]
+}

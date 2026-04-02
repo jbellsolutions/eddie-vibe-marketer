@@ -87,15 +87,19 @@ function generateLearnings(matchedWinners, allAnalyzed) {
   const avgCpa = allAnalyzed.reduce((sum, c) => sum + c.cpa, 0) / allAnalyzed.length;
   const winnerAvgCpa = matchedWinners.reduce((sum, c) => sum + c.cpa, 0) / matchedWinners.length;
 
-  // Count which ICPs and competitors produce winners
+  // Count which ICPs, competitors, formats, and platforms produce winners
   const icpWins = {};
   const competitorWins = {};
   const angleWins = {};
+  const formatWins = {};
+  const platformWins = {};
 
   for (const w of matchedWinners) {
     icpWins[w.icp] = (icpWins[w.icp] || 0) + 1;
     competitorWins[w.source_competitor] = (competitorWins[w.source_competitor] || 0) + 1;
     angleWins[w.angle] = (angleWins[w.angle] || 0) + 1;
+    if (w.format) formatWins[w.format] = (formatWins[w.format] || 0) + 1;
+    if (w.platform) platformWins[w.platform] = (platformWins[w.platform] || 0) + 1;
   }
 
   return {
@@ -111,13 +115,17 @@ function generateLearnings(matchedWinners, allAnalyzed) {
       best_icps: Object.entries(icpWins).sort((a, b) => b[1] - a[1]),
       best_competitor_sources: Object.entries(competitorWins).sort((a, b) => b[1] - a[1]),
       best_angles: Object.entries(angleWins).sort((a, b) => b[1] - a[1]),
+      best_formats: Object.entries(formatWins).sort((a, b) => b[1] - a[1]),
+      best_platforms: Object.entries(platformWins).sort((a, b) => b[1] - a[1]),
     },
     next_cycle_instructions: {
       double_down_on_icps: Object.entries(icpWins).sort((a, b) => b[1] - a[1]).slice(0, 2).map(e => e[0]),
       double_down_on_competitors: Object.entries(competitorWins).sort((a, b) => b[1] - a[1]).slice(0, 2).map(e => e[0]),
       winning_angles: Object.entries(angleWins).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => e[0]),
+      winning_formats: Object.entries(formatWins).sort((a, b) => b[1] - a[1]).slice(0, 3).map(e => e[0]),
+      winning_platforms: Object.entries(platformWins).sort((a, b) => b[1] - a[1]).slice(0, 2).map(e => e[0]),
       avoid: matchedWinners.length > 0
-        ? 'Reduce scripts for low-performing ICPs and competitor sources'
+        ? 'Reduce scripts for low-performing ICPs, formats, and competitor sources'
         : 'Not enough data yet — keep testing broadly',
     },
     top_performers: matchedWinners.map(w => ({
@@ -126,6 +134,8 @@ function generateLearnings(matchedWinners, allAnalyzed) {
       roas: w.roas,
       installs: w.installs,
       icp: w.icp,
+      format: w.format || 'unknown',
+      platform: w.platform || 'unknown',
       angle: w.angle,
     })),
   };

@@ -1,0 +1,17 @@
+{
+  "formats": {
+    "ugc-video": { "enabled": true, "tier": 1 },
+    "short-caption": { "enabled": true, "tier": 1 },
+    "linkedin-post": { "enabled": true, "tier": 2 },
+    "screenshot-static": { "enabled": true, "tier": 2 },
+    "text-overlay": { "enabled": true, "tier": 2 },
+    "carousel": { "enabled": true, "tier": 3 },
+    "broll-script": { "enabled": true, "tier": 3 }
+  },
+  "_docs": {
+    "tier_1": "Generated for ALL competitor ads",
+    "tier_2": "Generated for top 50% of competitor ads (by longevity)",
+    "tier_3": "Generated for top 20% of competitor ads (best performers only)",
+    "enabled": "Set to false to skip a format entirely"
+  }
+}
