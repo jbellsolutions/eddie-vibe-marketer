@@ -12,6 +12,7 @@
     "full-cycle": "node scripts/full-cycle.js"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "apify-client": "^2.9.0",
     "openai": "^4.52.0",
     "dotenv": "^16.4.0",
