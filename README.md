@@ -1,31 +1,43 @@
-# Eddie Vibe Marketer
+# Eddie Vibe Marketer V2
 
-A self-improving AI ad creative system that scrapes your competitors' best-performing ads, rewrites them in your brand voice, multiplies them across audience segments, and gets smarter every cycle based on real performance data.
+A self-improving AI content system that scrapes competitor ads, generates 7 content formats with legendary copywriter DNA, produces avatar videos and static images, and publishes directly to your personal social profiles — all from one command.
 
 Inspired by [Ernesto Lopez's $300K/yr app marketing system](https://x.com/ErnestoSOFTWARE).
 
 ---
 
-## How It Works (The Big Picture)
+## How It Works
 
-Eddie runs in **cycles**. Each cycle has 5 phases:
+Eddie runs in **cycles**. Each cycle has 6 phases:
 
 ```
- RESEARCH          BRAND VOICE         GENERATE           PRODUCE            OPTIMIZE
- ─────────         ───────────         ────────           ───────            ────────
- Scrape your       Load your           Claude rewrites    Top scripts go     Pull ad data,
- competitors'      tone, product,      each competitor    to UGC creators.   find winners,
- best Meta ads     ICPs, and           ad in YOUR voice   Rest go to         feed learnings
- + transcribe      anti-AI-slop        × every ICP.       Arcads AI actors.  into next cycle.
- them.             rules.              100-200 scripts.                      Repeat.
+ RESEARCH        GENERATE           QUALITY GATE       PRODUCE            PUBLISH           OPTIMIZE
+ ─────────       ────────           ────────────       ───────            ───────           ────────
+ Scrape Meta     Claude generates   Batch review       HeyGen avatars,    Browser Use       Pull ad data,
+ Ad Library +    7 formats with     against writing    Argil clones,      posts to your     find winners,
+ transcribe      Titan copywriter   rules. Pass,       Puppeteer images,  personal FB,      feed learnings
+ with Whisper.   DNA injected.      fail, or rewrite.  UGC briefs.        LI, IG, TikTok.   into next cycle.
 
- Phase 1           Phase 2             Phase 3            Phase 4            Phase 5
- (automated)       (one-time setup)    (automated)        (automated)        (automated)
+ Phase 1          Phase 3            Phase 3.5          Phase 4            Phase 6           Phase 5
+ (automated)      (automated)        (automated)        (automated)        (automated)       (after data)
 ```
 
-**One cycle = ~40 minutes of automation + 7-14 days of ad data collection. Repeat every 2-4 weeks.**
+**One cycle = ~40 minutes of automation. Run `npm run full-cycle` and walk away.**
 
-Each cycle gets smarter: Phase 5 identifies which ICPs, competitor sources, and psychological angles produced winners, then biases the next generation cycle toward those patterns.
+Each cycle gets smarter: Phase 5 identifies which ICPs, formats, platforms, and angles produced winners, then biases the next generation cycle toward those patterns.
+
+---
+
+## What's New in V2
+
+| V1 | V2 |
+|----|-----|
+| 1 format (UGC video scripts) | 7 formats (UGC video, LinkedIn posts, screenshot statics, carousels, b-roll scripts, text overlays, short captions) |
+| Generic Claude prompts | 18 Titan copywriter agents inject legendary copywriter DNA (Hormozi, Kennedy, Schwartz, etc.) |
+| Arcads only ($1,100/mo for 100 videos) | HeyGen ($29/mo unlimited) + Argil ($149/mo personal clone) + Puppeteer static images |
+| No publishing | Browser Use auto-posts to personal Facebook, LinkedIn, Instagram, TikTok |
+| No quality review | Quality gate batch-reviews all scripts against writing rules before production |
+| Track ICPs + angles only | Track ICPs + angles + formats + platforms for smarter optimization |
 
 ---
 
@@ -33,69 +45,93 @@ Each cycle gets smarter: Phase 5 identifies which ICPs, competitor sources, and 
 
 ```
 eddie-vibe-marketer/
-│
-├── config/
-│   ├── .env.example              # API key template (copy to .env)
-│   └── research-config.json      # Competitor list + scraping settings
-│
-├── brand-voice/                  # YOUR brand identity (fill these out once)
-│   ├── voice.md                  # How your brand sounds + example scripts
-│   ├── product.md                # Product details, features, proof points
-│   ├── icp.md                    # 2-4 audience personas (multiplier)
-│   └── writing-rules.md          # Anti-AI-slop rules (pre-configured)
-│
-├── scripts/                      # The automation engine
-│   ├── setup.js                  # Validates your config before first run
-│   ├── ad-research.js            # Phase 1: Apify scraper + Whisper transcription
-│   ├── voice-check.js            # Phase 2: Validates brand voice files
-│   ├── generate-scripts.js       # Phase 3: Claude generates script variations
-│   ├── produce-creatives.js      # Phase 4: UGC briefs + Arcads renders
-│   ├── optimize-loop.js          # Phase 5: Performance analysis + learnings
-│   └── full-cycle.js             # Runs Phase 1 → 3 → 4 in sequence
-│
-├── data/                         # Output (auto-created on first run)
-│   ├── competitor-research/      # Scraped transcripts + analysis
-│   ├── generated-scripts/        # All script variations (JSON)
-│   ├── creatives/                # UGC briefs (CSV + text) + Arcads scripts
-│   └── ad-performance/           # Performance snapshots + learnings.json
-│
-├── skills/                       # Claude Code skill definitions
-│   ├── ad-research/SKILL.md
-│   └── script-generation/SKILL.md
-│
-├── DEPLOYMENT-GUIDE.md           # Step-by-step setup instructions
-└── README.md                     # This file
+├── scripts/                        # Phase executors (Node.js)
+│   ├── ad-research.js              # Phase 1: Apify scrape + Whisper transcription
+│   ├── voice-check.js              # Phase 2: Brand voice validation (one-time)
+│   ├── generate-scripts.js         # Phase 3: Multi-format generation with Titans
+│   ├── quality-gate.js             # Phase 3.5: Batch quality review
+│   ├── produce-creatives.js        # Phase 4: Videos + images + UGC briefs
+│   ├── optimize-loop.js            # Phase 5: Performance analysis + learnings
+│   ├── build-publish-queue.js      # Phase 6a: Schedule posts per platform
+│   ├── run-publisher.js            # Phase 6b: Execute publish queue
+│   ├── full-cycle.js               # Orchestrator: 1 → 3 → 3.5 → 4 → 6a
+│   ├── setup.js                    # Validates env + dependencies + configs
+│   └── lib/                        # Shared modules
+│       ├── titan-router.js         # Routes formats → copywriter agents
+│       ├── formats.js              # 7 format definitions + prompt templates
+│       ├── generator.js            # Content generation engine (Claude API)
+│       ├── heygen-client.js        # HeyGen v2 API wrapper
+│       ├── argil-client.js         # Argil API wrapper (personal clone)
+│       └── image-generator.js      # Puppeteer HTML → PNG renderer
+├── publisher/                      # Browser Use publisher (Python)
+│   ├── publish.py                  # Entry point — called from Node via execFile
+│   ├── requirements.txt            # browser-use, langchain-anthropic
+│   └── platforms/                  # Per-platform posting logic
+│       ├── facebook.py             #   Personal profile posting
+│       ├── linkedin.py             #   Feed posts + articles
+│       ├── instagram.py            #   Web interface posting
+│       └── tiktok.py               #   Video upload flow
+├── titans/                         # Titan Genome — 18 copywriter agents
+│   ├── council/agents/             # Agent JSONs (Hormozi, Kennedy, etc.)
+│   ├── config/                     # Router + author definitions
+│   └── SWIPE_FILE_CONTEXT.md       # Copywriting principles reference
+├── brand-voice/                    # Your brand identity (fill out once)
+│   ├── voice.md                    # Tone, personality, vocabulary
+│   ├── product.md                  # Product details, features, positioning
+│   ├── icp.md                      # 2-4 audience personas (the multiplier)
+│   └── writing-rules.md           # Anti-AI-slop rules (pre-configured)
+├── config/                         # System configuration
+│   ├── .env.example                # API key template
+│   ├── research-config.json        # Competitor list + scraping settings
+│   ├── formats.json                # Format enable/disable + tier config
+│   ├── avatar-config.json          # ICP → avatar mappings (HeyGen/Argil)
+│   └── publish-config.json         # Per-platform schedule + Chrome profile
+├── templates/image-templates/      # HTML templates for Puppeteer rendering
+├── data/                           # Runtime output (gitignored)
+│   ├── competitor-research/        # Phase 1 output
+│   ├── generated-scripts/          # Phase 3 output (by-format/)
+│   ├── creatives/                  # Phase 4 output (videos, images, briefs)
+│   ├── ad-performance/             # Phase 5 data + learnings.json
+│   ├── publish-queue.json          # Phase 6a output
+│   └── publish-log.json            # Phase 6b execution log
+├── tests/                          # Smoke tests
+├── ARCHITECTURE.md                 # Full data flow diagrams
+├── AGENTS.md                       # AI agent documentation
+├── ETHOS.md                        # Project principles
+├── CHANGELOG.md                    # Version history
+├── WALKTHROUGH.md                  # Interactive setup guide
+└── DEPLOYMENT-GUIDE.md             # Detailed deployment instructions
 ```
 
 ---
 
 ## Prerequisites
 
-- **Node.js** 18+ (run `node -v` to check)
-- **npm** (comes with Node)
+- **Node.js** 18+ (`node -v`)
+- **Python** 3.10+ (`python3 --version`) — for Browser Use publisher
+- **Google Chrome** — for Browser Use personal profile posting
 - API accounts (see below)
 
 ---
 
-## Quick Start (5 Commands)
+## Quick Start
 
 ```bash
-# 1. Clone and install
-git clone https://github.com/jbellsolutions/eddie-vibe-marketer.git
-cd eddie-vibe-marketer
+# 1. Install
 npm install
+cd publisher && pip install -r requirements.txt && cd ..
 
-# 2. Set up API keys
+# 2. Configure
 cp config/.env.example .env
-# Open .env and add your keys (see API Keys section below)
+# Open .env and add your API keys
 
-# 3. Validate setup
+# 3. Set up brand voice
+# Edit the 4 files in brand-voice/ with your actual brand info
+
+# 4. Validate
 npm run setup
 
-# 4. Customize brand voice (see Brand Voice section)
-# Edit the 4 files in brand-voice/
-
-# 5. Run your first cycle
+# 5. Run
 npm run full-cycle
 ```
 
@@ -103,177 +139,169 @@ npm run full-cycle
 
 ## API Keys
 
-| Key | Service | What It Does | Required | Cost |
-|-----|---------|-------------|----------|------|
-| `APIFY_API_TOKEN` | [Apify](https://console.apify.com/account/integrations) | Scrapes Meta Ad Library for competitor video ads | Yes | ~$5-15/run |
-| `OPENAI_API_KEY` | [OpenAI](https://platform.openai.com/api-keys) | Whisper transcribes competitor video ads to text | Yes | ~$0.006/min |
-| `ANTHROPIC_API_KEY` | [Anthropic](https://console.anthropic.com/settings/keys) | Claude generates ad script variations | Yes | ~$0.01-0.10/script |
-| `ARCADS_API_KEY` | [Arcads](https://app.arcads.ai/settings/api) | AI actor video generation from scripts | No | $49-199/mo |
-| `SINGULAR_API_KEY` | [Singular](https://app.singular.net/) | Pulls ad performance data (CPA, ROAS) | No | Varies |
-| `CLAUDE_MODEL` | N/A | Which Claude model to use (default: Haiku) | No | Free setting |
-| `SLACK_WEBHOOK_URL` | Slack | Notifications when a cycle completes | No | Free |
+| Key | Service | Purpose | Required | Cost |
+|-----|---------|---------|----------|------|
+| `APIFY_API_TOKEN` | [Apify](https://console.apify.com/account/integrations) | Scrape Meta Ad Library | Yes | ~$5-15/run |
+| `OPENAI_API_KEY` | [OpenAI](https://platform.openai.com/api-keys) | Whisper transcription | Yes | ~$0.006/min |
+| `ANTHROPIC_API_KEY` | [Anthropic](https://console.anthropic.com/settings/keys) | Content generation + quality gate + Browser Use | Yes | ~$0.01-0.50/script |
+| `HEYGEN_API_KEY` | [HeyGen](https://app.heygen.com/settings) | ICP-matched avatar videos | For video | $29/mo (Creator) |
+| `ARGIL_API_KEY` | [Argil](https://app.argil.ai/settings) | Personal clone videos | For clone | $149/mo (Pro) |
+| `SINGULAR_API_KEY` | [Singular](https://app.singular.net/) | Ad performance data | For optimization | Varies |
+| `CLAUDE_MODEL` | N/A | Model selection (default: Haiku) | No | Free setting |
+| `SLACK_WEBHOOK_URL` | Slack | Cycle completion notifications | No | Free |
 
 ### Model Selection
 
-Set `CLAUDE_MODEL` in your `.env` to control quality vs. cost:
+Set `CLAUDE_MODEL` in your `.env`:
 
 | Model | Cost/Script | Quality | Best For |
 |-------|------------|---------|----------|
-| `claude-haiku-4-5-20251001` (default) | ~$0.01 | Good | Starting out, high volume testing |
-| `claude-sonnet-4-6` | ~$0.10 | Great | After you know what works, want polish |
-| `claude-opus-4-6` | ~$0.50 | Best | Final campaign scripts, premium brands |
+| `claude-haiku-4-5-20251001` (default) | ~$0.01 | Good | High volume, testing, iteration |
+| `claude-sonnet-4-6` | ~$0.10 | Great | Polished content, after finding winners |
+| `claude-opus-4-6` | ~$0.50 | Best | Premium brands, final campaign scripts |
+
+---
+
+## All Commands
+
+| Command | Phase | What It Does |
+|---------|-------|-------------|
+| `npm run setup` | — | Validates API keys, brand voice, configs |
+| `npm run phase1:research` | 1 | Scrapes competitor ads + transcribes with Whisper |
+| `npm run phase2:voice-check` | 2 | Validates brand voice files (one-time) |
+| `npm run phase3:generate` | 3 | Generates 7 content formats with Titan DNA |
+| `npm run phase3:quality` | 3.5 | Quality gate review against writing rules |
+| `npm run phase4:produce` | 4 | Produces HeyGen/Argil videos + Puppeteer images + UGC briefs |
+| `npm run phase5:optimize` | 5 | Analyzes performance, writes learnings for next cycle |
+| `npm run phase6:queue` | 6a | Builds publish queue with per-platform scheduling |
+| `npm run phase6:publish` | 6b | Posts to personal profiles via Browser Use |
+| `npm run phase6:publish -- --dry-run` | 6b | Preview what would be published (no posting) |
+| `npm run phase6:publish -- --limit 3` | 6b | Publish max 3 items from queue |
+| `npm run full-cycle` | All | Runs Phases 1 → 3 → 3.5 → 4 → 6a in sequence |
+
+---
+
+## The 7 Content Formats
+
+Eddie generates content across 7 formats, organized in tiers that control volume:
+
+| Format | Tier | Words | Output | Platforms |
+|--------|------|-------|--------|-----------|
+| **UGC Video** | 1 (all ads) | 40-120 | HOOK / BODY / CTA / ANGLE | Facebook, Instagram, TikTok |
+| **Short Caption** | 1 (all ads) | 30-60 | Caption + hashtags | Instagram, TikTok, Facebook |
+| **LinkedIn Post** | 2 (top 50%) | 150-300 | Hook line / body / CTA / hashtags | LinkedIn |
+| **Screenshot Static** | 2 (top 50%) | 20-40 | Headline + subtext (rendered to PNG) | Facebook, Instagram, LinkedIn |
+| **Text Overlay** | 2 (top 50%) | 18-48 | 6 cards, 3-8 words each (rendered to PNG) | Instagram, TikTok, Facebook |
+| **Carousel** | 3 (top 20%) | 105-175 | Cover + 5 slides + CTA (rendered to PNG) | LinkedIn, Instagram, Facebook |
+| **B-Roll Script** | 3 (top 20%) | 40-100 | Voiceover + visual direction + CTA | Facebook, Instagram, TikTok |
+
+**Volume math:** 50 ads x 3 ICPs → Tier 1: 300 pieces, Tier 2: 225 pieces, Tier 3: 60 pieces = **~585 pieces per cycle** at ~$5-8 Haiku cost.
+
+---
+
+## Titan Copywriter Agents
+
+Every piece of content is infused with copywriting DNA from legendary marketers. The Titan Router maps each format to 1-2 specialist agents:
+
+| Format | Titan Agents | Why |
+|--------|-------------|-----|
+| UGC Video | Hormozi + Kennedy | Irresistible offers + direct response hooks |
+| LinkedIn Post | Abraham + Bilyeu | Strategic value + inspirational storytelling |
+| Screenshot Static | Schwartz + Bencivenga | Awareness-level headlines + emotional precision |
+| Carousel | Sugarman + Brown | Sequential persuasion + unique mechanism reveals |
+| B-Roll Script | Catona + Kennedy | Broadcast pacing + hard-hitting CTAs |
+| Text Overlay | Schwartz + Kennedy | Pattern-interrupt headlines + urgency |
+| Short Caption | Buchan + Mueller | Humor/personality + benefit-dense compression |
+
+The agents are not standalone processes — their system prompts (~200 tokens each) are injected into the generation prompt as a "COPYWRITING STYLE INFLUENCE" section. No full council process unless you want it.
+
+---
+
+## Video Production
+
+### HeyGen ($29/mo — Unlimited Videos)
+ICP-matched avatars. Different avatar demographics for different audience segments:
+- "Mom" ICP → Female avatar, 30-45 age range
+- "Student" ICP → Male avatar, 18-25 age range
+- Configure mappings in `config/avatar-config.json`
+
+### Argil ($149/mo — Personal Clone)
+Your face, your voice, your mannerisms. For founder-brand content where authenticity matters. Limited to top scripts (configurable `max_per_cycle`).
+
+### Puppeteer (Free — Static Images)
+HTML templates rendered to PNG for screenshot statics, carousels, and text overlay cards. Four screenshot styles: tweet, text-message, notes-app, review. Carousel slides with cover/content/CTA differentiation.
+
+---
+
+## Browser Use Publishing
+
+Posts directly to your **personal profiles** (not business pages) using browser automation with your real Chrome login session.
+
+### Supported Platforms
+- **Facebook** — Personal feed posts with text + media
+- **LinkedIn** — Feed posts with text + media upload
+- **Instagram** — Web interface posting (requires media)
+- **TikTok** — Video upload via tiktok.com/upload
+
+### How It Works
+1. `build-publish-queue.js` creates a schedule from your production manifest
+2. Each platform has configured posting times and daily limits (in `config/publish-config.json`)
+3. `run-publisher.js` processes the queue, calling Python's Browser Use agent for each post
+4. Random jitter (1-5 min) on scheduled times to appear natural
+5. 5-15 second pause between posts
+6. Crash-safe: queue saves after every post, retry on failure (max 2 attempts)
+
+### Setup
+1. Set your Chrome profile path in `config/publish-config.json`
+2. Set the Python venv path (default: `/Users/home/browser-use-local/.venv/bin/python`)
+3. Log into all platforms in Chrome first — Browser Use uses your existing sessions
+4. Always `--dry-run` before your first live publish
 
 ---
 
 ## Brand Voice Setup (One-Time)
 
-This is the most important step. Eddie's output quality depends entirely on how well you define your brand. There are 4 files to customize:
+Eddie's output quality depends entirely on how well you define your brand. Four files to customize:
 
-### 1. `brand-voice/voice.md` — How You Sound
+### `brand-voice/voice.md` — How You Sound
+Paste 3-5 of your best-performing ad scripts as examples. Define your tone, vocabulary, and cadence. Eddie learns your voice from these examples.
 
-Paste 3-5 of your best-performing ad scripts as examples. Define your tone (casual? edgy? calm?), vocabulary (words you always/never use), and cadence (short sentences? slang? contractions?).
+### `brand-voice/product.md` — What You're Selling
+Product name, one-liner, core features, pricing, social proof, competitive advantages. Eddie weaves these proof points into content naturally.
 
-Eddie learns your voice from these examples and rewrites every competitor ad to match.
+### `brand-voice/icp.md` — Who You're Selling To
+Define 2-4 audience personas with demographics, psychographics, language, and preferred angles. **This is the multiplier** — each ad gets rewritten once per ICP.
 
-### 2. `brand-voice/product.md` — What You're Selling
-
-Your product name, one-liner, core features (top 5 only), pricing, social proof (ratings, downloads, testimonials), and competitive advantages.
-
-Eddie weaves these proof points into scripts naturally instead of making generic claims.
-
-### 3. `brand-voice/icp.md` — Who You're Selling To
-
-Define 2-4 audience personas. Each ICP includes demographics, psychographics (fears, desires, failed alternatives), their language, and the ad angle that works for them.
-
-**This is the multiplier.** Each competitor ad gets rewritten once per ICP:
-- 30 ads x 3 ICPs = 90 scripts
-- 50 ads x 4 ICPs = 200 scripts
-
-### 4. `brand-voice/writing-rules.md` — The Anti-AI Filter
-
-Pre-configured with banned AI-slop words ("delve", "leverage", "game-changer"), banned sentence starters ("In today's world..."), and required writing style rules (short sentences, contractions, specific over generic).
-
-Customize if needed, but the defaults are solid.
+### `brand-voice/writing-rules.md` — The Anti-AI Filter
+Pre-configured with banned AI-slop words, banned starters, and required style rules. The quality gate enforces these automatically.
 
 ---
 
-## Running Eddie
-
-### NPM Commands
-
-| Command | What It Does |
-|---------|-------------|
-| `npm run setup` | Validates API keys, brand voice files, and competitor config |
-| `npm run phase1:research` | Scrapes competitor ads from Meta Ad Library + transcribes with Whisper |
-| `npm run phase2:voice-check` | Validates your brand voice files are properly filled out |
-| `npm run phase3:generate` | Generates script variations using Claude (competitor ads x ICPs) |
-| `npm run phase4:produce` | Ranks scripts, exports UGC briefs + pushes to Arcads |
-| `npm run phase5:optimize` | Pulls performance data, identifies winners, writes learnings |
-| `npm run full-cycle` | Runs Phase 1 → 3 → 4 in sequence |
-
-### Typical Workflow
+## Self-Improvement Loop
 
 ```
-Week 1:     npm run setup → customize brand voice → npm run full-cycle
-            Upload creatives to Meta Ads. Let them run.
+Cycle 1: Broad exploration
+├── Generate 585 pieces across 7 formats and 3 ICPs
+├── Publish to personal profiles, run paid on Meta
+├── Wait 7-14 days for performance data
+└── Phase 5 finds: "Busy Mom" ICP + screenshot statics on Facebook = 3x lower CPA
 
-Week 2-3:   Ads collecting data. Do nothing.
+Cycle 2: Informed by winners
+├── Biased toward Busy Mom + screenshot statics + Facebook
+├── More carousel content (Tier 3 winners get promoted)
+├── LinkedIn posts underperforming → reduced volume
+└── Phase 5 finds: Short hooks (under 5 words) + Hormozi-style offers win
 
-Week 3-4:   npm run phase5:optimize → npm run full-cycle
-            New scripts biased toward winners. Upload and repeat.
-
-Week 5+:    Each cycle gets smarter. CPA drops. Winners compound.
+Cycle 3+: Compounding intelligence
+├── Double down on proven ICP × format × platform combinations
+├── CPA drops further each cycle
+└── Learnings compound across formats and platforms
 ```
 
----
-
-## Phase-by-Phase Deep Dive
-
-### Phase 1: Ad Research (`ad-research.js`)
-
-**What it does:**
-1. Reads your competitor list from `config/research-config.json`
-2. Calls the Apify Meta Ad Library scraper for each competitor
-3. Sorts results by longest-running ads (proxy for best-performing)
-4. Downloads each video ad
-5. Transcribes audio with OpenAI Whisper (verbose JSON format)
-6. Extracts: full transcript, hook (first 20 words), body copy, headline, CTA
-7. Saves structured JSON per ad + a master `research-summary.json`
-8. Deletes video files after transcription to save disk space
-
-**Output:** `data/competitor-research/research-summary.json`
-
-**Config options** in `research-config.json`:
-- `max_ads_per_competitor`: How many ads to scrape per competitor (default: 50)
-- `default_country`: Country filter for ad library (default: "US")
-- `ad_type`: "VIDEO" only — text ads are skipped
-- `active_only`: Only scrape currently active ads (default: true)
-
-### Phase 2: Brand Voice (`voice-check.js`)
-
-Not automated — this is your one-time setup. The voice check script validates that all 4 brand voice files exist and have been customized (no `[YOUR` placeholder text remaining).
-
-### Phase 3: Script Generation (`generate-scripts.js`)
-
-**What it does:**
-1. Loads all competitor ad transcripts from Phase 1
-2. Loads all 4 brand voice files (voice, product, ICPs, writing rules)
-3. Parses `icp.md` into individual ICP profiles
-4. For each competitor ad x each ICP:
-   - Sends a prompt to Claude with the competitor ad, your brand voice, product details, writing rules, and the specific ICP
-   - Claude writes a NEW original script that uses the same angle/structure but in your voice, for that ICP
-   - Output format: HOOK / BODY / CTA / ANGLE / WHY IT WORKS
-5. Saves each script as individual JSON + a master `all-scripts.json`
-6. 500ms delay between API calls for rate limiting
-
-**Output:** `data/generated-scripts/all-scripts.json` + individual script files
-
-**The prompt engineering is the core of Eddie.** Claude is instructed to:
-- Use the competitor ad's angle and structure (what made it work)
-- Write entirely in your brand voice
-- Speak directly to the specific ICP
-- Follow every rule in writing-rules.md (no AI slop)
-- Keep scripts 15-45 seconds when read aloud (40-120 words)
-
-### Phase 4: Creative Production (`produce-creatives.js`)
-
-**What it does:**
-1. Loads all generated scripts
-2. Ranks them by priority (diversity of angles + competitors first)
-3. Splits into two tiers:
-   - **Top 15 scripts** → exported as UGC creator briefs
-   - **Remaining scripts** → pushed to Arcads AI actors (or saved for manual upload)
-
-**UGC Output** (`data/creatives/ugc-creator-briefs/`):
-- `creator-briefs.csv` — spreadsheet with Script ID, Target Audience, Inspired By, Full Script, Direction Notes
-- Individual `script-X-brief.txt` files with filming notes (9:16 vertical, 15-45 sec, lighting tips)
-
-**Arcads Output** (`data/creatives/arcads-renders/` or `arcads-manual-upload/`):
-- If `ARCADS_API_KEY` is set: automatically queues renders with up to 5 AI actors per script
-- If not: saves clean script text files for manual upload to Arcads dashboard
-
-### Phase 5: Self-Improvement Loop (`optimize-loop.js`)
-
-**What it does:**
-1. Pulls creative performance data from Singular API (last 30 days)
-   - Or reads from `data/ad-performance/manual-data.json` if no Singular key
-2. Calculates CPA and ROAS for each creative
-3. Identifies top 20% performers (minimum 3)
-4. Matches winners back to original scripts (by creative name/ID)
-5. Analyzes patterns: which ICPs win? Which competitor sources? Which angles?
-6. Writes `learnings.json` with:
-   - Cycle stats (total tested, winners found, avg CPA, improvement %)
-   - Winning patterns (best ICPs, best competitor sources, best angles)
-   - Next cycle instructions (double down on X, avoid Y)
-7. Saves a dated performance snapshot for historical tracking
-
-**Output:** `data/ad-performance/learnings.json`
-
-**The self-improvement loop:** When `full-cycle.js` runs, it checks for `learnings.json`. If it exists, it logs what worked last time. The generation phase then has access to this context, biasing new scripts toward winning patterns.
-
-### Full Cycle (`full-cycle.js`)
-
-Orchestrator that runs Phase 1 → 3 → 4 in sequence with error handling. If any phase fails, the cycle stops. Logs timing and provides a checklist of manual next steps (send briefs to creators, upload to Meta, wait for data, then optimize).
+The `learnings.json` file bridges cycles. It tracks:
+- Best ICPs, competitor sources, angles (from V1)
+- **Best formats** (which of the 7 content types convert)
+- **Best platforms** (which social channels drive results)
 
 ---
 
@@ -283,37 +311,38 @@ Orchestrator that runs Phase 1 → 3 → 4 in sequence with error handling. If a
 
 | Service | Cost | Notes |
 |---------|------|-------|
-| Apify | $5-15 | Pay per scrape result |
+| Apify | $5-15 | Per scrape run |
 | OpenAI Whisper | $2-10 | $0.006/min of audio |
-| Claude Haiku | $1-3 | ~$0.01/script, 100-200 scripts |
-| Arcads | $0 | Skip initially — UGC only |
-| UGC Creators | $75-250 | 5-10 scripts x $15-25 each |
-| **Total** | **~$85-280** | Before ad spend |
+| Claude Haiku | $5-8 | ~$0.01/piece × ~585 pieces |
+| HeyGen | $29/mo | Unlimited avatar videos |
+| Puppeteer | $0 | Free — renders locally |
+| Browser Use | $0 | Free — open source |
+| **Total** | **~$41-62/cycle** | + $29/mo HeyGen |
 
 ### Full Setup
 
 | Service | Cost | Notes |
 |---------|------|-------|
-| Apify | $5-15 | Pay per scrape result |
+| Apify | $5-15 | Per scrape run |
 | OpenAI Whisper | $2-10 | Transcription |
-| Claude Sonnet | $10-20 | ~$0.10/script |
-| Arcads | $49-199/mo | AI actor renders |
-| UGC Creators | $150-750 | 10-15 scripts x $15-50 each |
-| **Total** | **~$215-1,000** | Before ad spend |
+| Claude Sonnet | $50-60 | ~$0.10/piece for polish |
+| HeyGen | $29/mo | Avatar videos |
+| Argil | $149/mo | Personal clone videos |
+| UGC Creators | $75-250 | For top-tier briefs |
+| **Total** | **~$130-335/cycle** | + $178/mo subscriptions |
 
 ### Ways to Cut Costs
-
-- Use Haiku (default) instead of Sonnet — 10x cheaper per script
-- Start with 2-3 competitors instead of 10
-- Use 2 ICPs instead of 4 — halves your script count
-- Skip Arcads — go UGC-only until you find winning scripts
-- Run Whisper locally with `whisper.cpp` (free, requires local setup)
+- Haiku (default) is 10x cheaper than Sonnet — start here
+- 2-3 competitors instead of 10
+- 2 ICPs instead of 4 — halves everything
+- Skip Argil — HeyGen only until you prove ROI
+- Disable formats you don't need in `config/formats.json`
 
 ---
 
 ## No Singular? No Problem
 
-If you don't use Singular as your MMP, manually export performance data from Meta Ads Manager and save it as `data/ad-performance/manual-data.json`:
+Export performance data from your ad platform and save as `data/ad-performance/manual-data.json`:
 
 ```json
 [
@@ -327,80 +356,24 @@ If you don't use Singular as your MMP, manually export performance data from Met
 ]
 ```
 
-Then run `npm run phase5:optimize` as normal. Eddie will analyze this data the same way it would analyze Singular data.
+Then run `npm run phase5:optimize` as normal.
 
 ---
 
-## Competitor Configuration
-
-Edit `config/research-config.json` to add your competitors:
-
-```json
-{
-  "competitors": [
-    {
-      "name": "Calm App",
-      "advertiser_id": "123456789",
-      "keywords": ["meditation app", "sleep app"]
-    }
-  ]
-}
-```
-
-**Finding advertiser IDs:**
-1. Go to [facebook.com/ads/library](https://www.facebook.com/ads/library)
-2. Search for the competitor
-3. Click their page — the ID is in the URL
-
-You can use `advertiser_id` (exact match) or `keywords` (broader search) or both.
-
----
-
-## How the Self-Improvement Loop Works
+## Typical Workflow
 
 ```
-Cycle 1: Broad exploration
-├── Research 50 competitor ads
-├── Generate 200 scripts (50 ads x 4 ICPs)
-├── Test on Meta for 14 days
-└── Phase 5 finds: "Busy Mom" ICP + "fear of missing out" angle = 3x lower CPA
+Week 1:     npm run setup → customize brand voice → npm run full-cycle
+            Review content → npm run phase6:publish --dry-run → npm run phase6:publish
+            Upload top videos to Meta Ads as paid.
 
-Cycle 2: Informed by winners
-├── Research same competitors (fresh ads)
-├── Generate 200 scripts — but biased toward Busy Mom + FOMO angles
-├── Test on Meta for 14 days
-└── Phase 5 finds: Short hooks (under 5 words) outperform long hooks
+Week 2-3:   Content auto-posting to personal profiles.
+            Paid ads collecting performance data.
 
-Cycle 3: Compounding intelligence
-├── Research expands to similar competitors
-├── Scripts double down on Busy Mom + FOMO + short hooks
-├── CPA drops further
-└── Rinse and repeat
-```
+Week 3-4:   npm run phase5:optimize → npm run full-cycle
+            New content biased toward winners. Repeat.
 
-The `learnings.json` file is the bridge between cycles. It tells the next generation phase:
-- Which ICPs to prioritize
-- Which competitor sources produce winners
-- Which psychological angles convert
-- What to avoid
-
----
-
-## Dependencies
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `apify-client` | ^2.9.0 | Meta Ad Library scraper API |
-| `openai` | ^4.52.0 | Whisper transcription API |
-| `dotenv` | ^16.4.0 | Environment variable loading |
-| `axios` | ^1.7.0 | HTTP client (Singular + Arcads APIs) |
-| `csv-writer` | ^1.6.0 | UGC creator brief CSV export |
-| `csv-parser` | ^3.0.0 | Performance data CSV import |
-
-Note: The Anthropic SDK (`@anthropic-ai/sdk`) is loaded directly in the generation script without being in package.json — install it separately:
-
-```bash
-npm install @anthropic-ai/sdk
+Week 5+:    Each cycle gets smarter. CPA drops. Winners compound.
 ```
 
 ---
@@ -409,14 +382,40 @@ npm install @anthropic-ai/sdk
 
 | Problem | Fix |
 |---------|-----|
-| `npm run setup` shows missing keys | Open `.env` and add your API keys |
-| Brand voice files show "needs customization" | Replace all `[YOUR...]` placeholder text in `brand-voice/*.md` |
-| Phase 1 finds 0 ads | Check your competitor `advertiser_id` or `keywords` in `research-config.json` |
-| Phase 3 fails with auth error | Verify `ANTHROPIC_API_KEY` is valid and has credits |
-| Phase 4 skips Arcads | Set `ARCADS_API_KEY` in `.env`, or use the manual upload files |
-| Phase 5 creates a template | No performance data yet — fill in `manual-data.json` or connect Singular |
-| Scripts sound too generic | Improve your `voice.md` — paste more real examples of your best content |
-| Too many scripts to test | Reduce competitors or ICPs to lower the multiplier |
+| `npm run setup` shows missing keys | Add API keys to `.env` |
+| Brand voice shows "needs customization" | Replace all `[YOUR...]` placeholders in `brand-voice/*.md` |
+| Phase 1 finds 0 ads | Check competitor config in `research-config.json` |
+| Phase 3 auth error | Verify `ANTHROPIC_API_KEY` has credits |
+| Phase 4 no HeyGen videos | Set `HEYGEN_API_KEY` and configure avatar IDs in `avatar-config.json` |
+| Phase 5 creates template | No data yet — fill `manual-data.json` or connect Singular |
+| Publisher fails with CAPTCHA | Log into the platform in Chrome manually, solve CAPTCHA, try again |
+| Publisher fails with 2FA | Complete 2FA in Chrome — Browser Use uses your existing session |
+| Scripts sound generic | Improve `voice.md` with more real examples of your best content |
+| Too many pieces per cycle | Disable formats in `config/formats.json` or reduce ICPs |
+
+---
+
+## Dependencies
+
+### Node.js (package.json)
+
+| Package | Purpose |
+|---------|---------|
+| `@anthropic-ai/sdk` | Claude API for content generation + quality gate |
+| `apify-client` | Meta Ad Library scraper |
+| `openai` | Whisper transcription |
+| `puppeteer` | HTML → PNG image rendering |
+| `dotenv` | Environment variable loading |
+| `axios` | HTTP client (HeyGen, Argil, Singular APIs) |
+| `csv-writer` | UGC creator brief CSV export |
+| `csv-parser` | Performance data CSV import |
+
+### Python (publisher/requirements.txt)
+
+| Package | Purpose |
+|---------|---------|
+| `browser-use` | Browser automation for personal profile posting |
+| `langchain-anthropic` | Claude as the browser agent's decision engine |
 
 ---
 

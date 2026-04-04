@@ -2,6 +2,16 @@
 
 These rules govern ALL agent behavior in this workspace. They are non-negotiable.
 
+## Session Start
+
+Run /project-main at the start of each session for a repo health brief.
+
+## Model Selection
+
+- **Haiku** (claude-haiku-4-5-20251001): Content generation, data lookups, format rendering. Default for CLAUDE_MODEL.
+- **Sonnet** (claude-sonnet-4-6): Quality gate reviews, prompt engineering, complex generation.
+- **Opus** (claude-opus-4-6): Strategy, architecture decisions, multi-step reasoning.
+
 ---
 
 ## Core Behavior

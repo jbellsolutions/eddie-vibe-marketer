@@ -1,0 +1,32 @@
+{
+  "name": "eddie-vibe-marketer",
+  "description": "Self-improving AI content pipeline: scrape competitor ads, generate 7 formats with Titan copywriter DNA, produce videos/images, publish to personal profiles",
+  "version": "2.0.0",
+  "language": "javascript",
+  "secondary_languages": ["python"],
+  "entry_points": [
+    "scripts/full-cycle.js",
+    "scripts/setup.js",
+    "scripts/run-publisher.js",
+    "publisher/publish.py"
+  ],
+  "key_components": [
+    {"name": "scripts/", "description": "Phase executors and shared libs (Node.js)"},
+    {"name": "publisher/", "description": "Browser Use publisher (Python)"},
+    {"name": "titans/", "description": "18 Titan Genome copywriter agent definitions"},
+    {"name": "brand-voice/", "description": "User-configured brand identity files"},
+    {"name": "config/", "description": "System configuration and API key templates"},
+    {"name": "templates/", "description": "HTML templates for Puppeteer image rendering"},
+    {"name": "data/", "description": "Runtime data — research, scripts, creatives, queues"}
+  ],
+  "fragile_areas": [
+    "publisher/platforms/ — Browser automation is inherently fragile, UI changes break selectors",
+    "scripts/lib/heygen-client.js — HeyGen API v2 may change endpoints",
+    "scripts/lib/image-generator.js — Puppeteer rendering depends on Chrome version"
+  ],
+  "dependencies": {
+    "node": ["@anthropic-ai/sdk", "apify-client", "openai", "dotenv", "axios", "csv-writer", "csv-parser", "puppeteer"],
+    "python": ["browser-use", "langchain-anthropic"]
+  },
+  "external_services": ["Apify", "OpenAI", "Anthropic", "HeyGen", "Argil", "Singular", "Browser Use"]
+}

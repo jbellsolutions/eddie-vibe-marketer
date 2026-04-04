@@ -1,0 +1,35 @@
+---
+description: Eddie Vibe Marketer development rules
+globs: ["**/*.js", "**/*.py", "**/*.json"]
+---
+
+# Eddie Vibe Marketer — Cursor Rules
+
+## Architecture
+- Node.js orchestrator in scripts/, Python publisher in publisher/
+- All phase scripts are standalone: each reads from data/ and writes to data/
+- No direct agent-to-agent communication — data passes through JSON files on disk
+- Titan agents are prompt enhancers, not standalone processes
+
+## Code Style
+- Node scripts use require() (CommonJS), not ES modules
+- dotenv loaded at top of each script with path to ../.env
+- All file paths use path.resolve(__dirname, '..')
+- Console output uses emoji prefixes for phase identification
+
+## Content Rules
+- Never post duplicate content
+- No "test post" language on public platforms
+- Short-form writing: no "Wh-" starters, no dramatic fragments
+- Quality gate must pass before production
+
+## Security
+- API keys in .env only, never in code
+- .env is gitignored
+- Browser Use uses persistent Chrome profile — never store credentials in code
+- --dry-run before live publishing
+
+## Testing
+- Run `npm run setup` to validate environment
+- Use `--dry-run` flag on publisher before live runs
+- Every pipeline change needs a full-cycle test with sample data

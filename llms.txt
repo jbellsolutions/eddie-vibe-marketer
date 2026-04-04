@@ -1,0 +1,23 @@
+# Eddie Vibe Marketer V2
+
+Self-improving AI content system for performance marketing. Scrapes competitor ads from Meta Ad Library, generates 7 content formats using 18 legendary copywriter agents (Titan Genome), produces avatar videos via HeyGen/Argil and static images via Puppeteer, and publishes directly to personal social profiles via Browser Use browser automation.
+
+## Pipeline
+1. Research: Apify scrapes competitor video ads → OpenAI Whisper transcribes → extracts hooks/angles/body
+2. Generate: Claude generates 7 formats (UGC video, LinkedIn posts, screenshot statics, carousels, b-roll scripts, text overlays, short captions) with Titan copywriter DNA injected per format
+3. Quality Gate: Batch reviews scripts against writing rules, flags violations, rewrites failures
+4. Produce: HeyGen for ICP-matched avatar videos, Argil for personal clone videos, Puppeteer for static images, UGC briefs for creators
+5. Publish: Browser Use automates posting to personal Facebook, LinkedIn, Instagram, TikTok profiles via real Chrome session
+6. Optimize: Singular performance data → winner analysis → learnings feed next cycle
+
+## Tech Stack
+- Node.js orchestrator with Python Browser Use publisher
+- APIs: Apify, OpenAI, Anthropic (Claude), HeyGen, Argil, Singular
+- Browser automation: Browser Use with real Chrome profile
+- Image generation: Puppeteer HTML→PNG rendering
+
+## Key Entry Points
+- `npm run full-cycle` — Run phases 1→3→3.5→4→6a in sequence
+- `npm run phase6:publish` — Process publish queue
+- `npm run phase5:optimize` — Analyze performance and generate learnings
+- `npm run setup` — Validate environment and dependencies
