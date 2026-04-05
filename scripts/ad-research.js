@@ -13,7 +13,7 @@ const OpenAI = require('openai');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
-require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+require('dotenv').config({ override: true, path: path.resolve(__dirname, '..', '.env') });
 
 const config = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '..', 'config', 'research-config.json'), 'utf8')
@@ -28,17 +28,32 @@ async function scrapeCompetitorAds(competitor) {
   console.log(`\n🔍 Scraping ads for: ${competitor.name}`);
 
   const input = {
-    country: config.meta_ad_library.default_country,
-    adType: config.meta_ad_library.ad_type,
-    adActiveStatus: config.meta_ad_library.active_only ? 'ACTIVE' : 'ALL',
     maxItems: config.meta_ad_library.max_ads_per_competitor,
   };
 
-  if (competitor.advertiser_id) {
-    input.advertiserId = competitor.advertiser_id;
+  // Support urls array (used by curious_coder/facebook-ads-library-scraper)
+  if (competitor.urls && competitor.urls.length > 0) {
+    input.urls = competitor.urls;
+  } else if (competitor.startUrls && competitor.startUrls.length > 0) {
+    input.urls = competitor.startUrls;
+  } else if (competitor.advertiser_id) {
+    const country = config.meta_ad_library.default_country || 'US';
+    input.urls = [{
+      url: `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=${country}&view_all_page_id=${competitor.advertiser_id}`
+    }];
   } else if (competitor.keywords && competitor.keywords.length > 0) {
-    input.searchTerms = competitor.keywords;
+    const country = config.meta_ad_library.default_country || 'US';
+    input.urls = competitor.keywords.map(kw => ({
+      url: `https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=${country}&q=${encodeURIComponent(kw)}`
+    }));
   }
+
+  if (!input.urls || input.urls.length === 0) {
+    console.log(`   ⚠️  No URLs configured for ${competitor.name} — skipping`);
+    return [];
+  }
+
+  console.log(`   📡 Scraping ${input.urls.length} URL(s)...`);
 
   const run = await apify.actor(config.meta_ad_library.apify_actor_id).call(input);
   const { items } = await apify.dataset(run.defaultDatasetId).listItems();
@@ -75,48 +90,81 @@ function extractHook(transcript, maxWords = 20) {
 }
 
 async function analyzeAd(ad, competitor, index) {
-  const videoUrl = ad.videoUrl || ad.video_url || ad.media_url;
-  if (!videoUrl) {
-    console.log(`   ⏭️  Ad ${index + 1}: No video URL, skipping`);
-    return null;
-  }
+  // Handle curious_coder actor format (snapshot nested data)
+  const snapshot = ad.snapshot || {};
+  const videos = snapshot.videos || [];
+  const images = snapshot.images || [];
+  const cards = snapshot.cards || [];
+
+  const videoUrl = (videos[0] || {}).video_hd_url || (videos[0] || {}).video_sd_url || ad.videoUrl || ad.video_url;
+  const hasVideo = !!videoUrl;
 
   const competitorDir = path.join(OUTPUT_DIR, competitor.name.replace(/\s+/g, '-').toLowerCase());
   fs.mkdirSync(competitorDir, { recursive: true });
 
-  const videoPath = path.join(competitorDir, `ad-${index + 1}.mp4`);
   const jsonPath = path.join(competitorDir, `ad-${index + 1}.json`);
 
   try {
-    // Download
-    console.log(`   📥 Downloading ad ${index + 1}...`);
-    await downloadVideo(videoUrl, videoPath);
+    let transcript = { text: '', duration: null };
 
-    // Transcribe
-    console.log(`   🎤 Transcribing ad ${index + 1}...`);
-    const transcript = await transcribeVideo(videoPath);
+    if (hasVideo) {
+      const videoPath = path.join(competitorDir, `ad-${index + 1}.mp4`);
+      console.log(`   📥 Downloading ad ${index + 1} (video)...`);
+      await downloadVideo(videoUrl, videoPath);
+      console.log(`   🎤 Transcribing ad ${index + 1}...`);
+      transcript = await transcribeVideo(videoPath);
+      fs.unlinkSync(videoPath);
+    } else {
+      console.log(`   📄 Ad ${index + 1}: Image/text ad`);
+    }
 
-    // Extract data
+    // Extract body copy — handle both flat and snapshot formats
+    const bodyCopy = snapshot.body?.text || ad.body || ad.ad_body || ad.ad_creative_body || '';
+    const headline = snapshot.title || snapshot.link_title || ad.title || ad.headline || '';
+    const ctaText = snapshot.cta_text || ad.cta_text || ad.call_to_action || '';
+    const linkUrl = snapshot.link_url || '';
+
+    // Extract card copy if carousel
+    const cardCopy = cards.map(c => c.body || c.title || '').filter(Boolean).join(' | ');
+
+    // Skip ads with no useful content
+    const allCopy = bodyCopy + headline + (transcript.text || '') + cardCopy;
+    if (!allCopy.trim()) {
+      console.log(`   ⏭️  Ad ${index + 1}: No content found, skipping`);
+      return null;
+    }
+
+    const hookSource = transcript.text || bodyCopy || headline;
+    const hookWords = hookSource.split(/\s+/).slice(0, 20).join(' ');
+
     const result = {
       competitor: competitor.name,
       ad_index: index + 1,
-      video_url: videoUrl,
-      full_transcript: transcript.text,
-      hook: extractHook(transcript),
+      media_type: hasVideo ? 'video' : cards.length > 0 ? 'carousel' : images.length > 0 ? 'image' : 'text',
+      video_url: videoUrl || null,
+      full_transcript: transcript.text || null,
+      hook: hookWords,
       duration: transcript.duration || null,
-      body_copy: ad.body || ad.ad_body || '',
-      headline: ad.title || ad.headline || '',
-      cta: ad.cta_text || ad.call_to_action || '',
-      started_running: ad.startDate || ad.start_date || '',
-      page_name: ad.pageName || ad.page_name || '',
+      body_copy: bodyCopy,
+      headline: headline,
+      cta: ctaText,
+      link_url: linkUrl,
+      card_copy: cardCopy || null,
+      started_running: ad.start_date || ad.start_date_formatted || '',
+      end_date: ad.end_date_formatted || null,
+      page_name: ad.page_name || snapshot.page_name || '',
+      page_id: ad.page_id || '',
+      ad_library_url: ad.ad_library_url || '',
+      is_active: ad.is_active || false,
+      total_active_time: ad.total_active_time || null,
+      spend: ad.spend || null,
+      impressions: ad.impressions_with_index || null,
+      publisher_platform: ad.publisher_platform || [],
       scraped_at: new Date().toISOString(),
     };
 
     fs.writeFileSync(jsonPath, JSON.stringify(result, null, 2));
-    console.log(`   ✅ Ad ${index + 1}: "${result.hook.substring(0, 50)}..."`);
-
-    // Clean up video to save space (keep transcript)
-    fs.unlinkSync(videoPath);
+    console.log(`   ✅ Ad ${index + 1} [${result.media_type}]: "${result.hook.substring(0, 50)}..."`);
 
     return result;
   } catch (err) {

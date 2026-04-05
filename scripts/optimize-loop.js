@@ -11,7 +11,7 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+require('dotenv').config({ override: true, path: path.resolve(__dirname, '..', '.env') });
 
 const ROOT = path.resolve(__dirname, '..');
 const SCRIPTS_PATH = path.join(ROOT, 'data', 'generated-scripts', 'all-scripts.json');

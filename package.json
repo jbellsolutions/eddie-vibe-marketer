@@ -12,6 +12,7 @@
     "phase5:optimize": "node scripts/optimize-loop.js",
     "phase6:queue": "node scripts/build-publish-queue.js",
     "phase6:publish": "node scripts/run-publisher.js",
+    "content:generate": "node scripts/generate-content.js",
     "full-cycle": "node scripts/full-cycle.js"
   },
   "dependencies": {

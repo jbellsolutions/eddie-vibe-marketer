@@ -1,22 +1,30 @@
 {
   "meta_ad_library": {
-    "apify_actor_id": "apify/facebook-ads-scraper",
+    "apify_actor_id": "curious_coder/facebook-ads-library-scraper",
     "default_country": "US",
-    "ad_type": "VIDEO",
-    "active_only": true,
-    "max_ads_per_competitor": 50,
-    "sort_by": "longest_running"
+    "max_ads_per_competitor": 20
   },
   "competitors": [
     {
-      "name": "Competitor 1",
-      "advertiser_id": "",
-      "keywords": ["your niche keyword 1", "your niche keyword 2"]
+      "name": "Staffing-AI-Solutions",
+      "urls": [
+        { "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=staffing%20agency%20AI" },
+        { "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=recruiting%20automation%20software" }
+      ]
     },
     {
-      "name": "Competitor 2",
-      "advertiser_id": "",
-      "keywords": ["your niche keyword 3"]
+      "name": "AI-Business-Automation",
+      "urls": [
+        { "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=AI%20business%20automation" },
+        { "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=automate%20business%20with%20AI" }
+      ]
+    },
+    {
+      "name": "Recruiting-Software",
+      "urls": [
+        { "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=recruiting%20software" },
+        { "url": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=US&q=applicant%20tracking%20system" }
+      ]
     }
   ],
   "whisper": {

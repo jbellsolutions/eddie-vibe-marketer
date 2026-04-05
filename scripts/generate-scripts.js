@@ -13,7 +13,7 @@
 
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+require('dotenv').config({ override: true, path: path.resolve(__dirname, '..', '.env') });
 
 const { generateContent, createClient } = require('./lib/generator');
 const { getEnabledFormats, FORMAT_DEFINITIONS } = require('./lib/formats');

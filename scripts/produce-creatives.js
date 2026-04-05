@@ -17,7 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 const { createObjectCsvWriter } = require('csv-writer');
-require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+require('dotenv').config({ override: true, path: path.resolve(__dirname, '..', '.env') });
 
 const { HeyGenClient } = require('./lib/heygen-client');
 const { ArgilClient } = require('./lib/argil-client');

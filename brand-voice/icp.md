@@ -1,81 +1,55 @@
-# Ideal Customer Profiles (ICPs)
+# Ideal Customer Profiles — Staffing & Recruiting Vertical
 
-## Purpose
-Each ICP is a distinct audience segment. Eddie multiplies every ad script by each ICP to create variations that speak directly to different people. More ICPs = more script variations = more creative testing.
+## ICP 1: The Overwhelmed Agency Owner (Primary)
 
----
+**Demographics:** Owner/CEO of staffing agency, 5-25 employees, $1M-$10M revenue, US-based, been in business 3-15 years
 
-## ICP 1: [Name this persona — e.g., "The Busy Mom"]
+**Psychographics:** Wearing too many hats. Started the agency because they were a great recruiter, now stuck managing operations. Knows they need technology but doesn't have time or expertise to implement it. Worried about the future of the industry with AI. Wants to grow but can't add headcount without crushing margins.
 
-**Demographics:**
-- Age range:
-- Gender:
-- Location:
-- Income level:
+**Language:** "I don't have time for this." "My recruiters are drowning." "We tried X tool and it didn't work." "I need more clients but can't handle the ones I have." "AI is going to replace us all."
 
-**Psychographics:**
-- What keeps them up at night:
-- What they're scrolling for:
-- What they've already tried that didn't work:
-- What would make them stop scrolling:
+**Ad Angle:** Show them how to get their time back. Lead with the 60% admin stat. Promise: same team, 30-50% more placements. The guarantee removes all risk.
 
-**Language they use:**
-- How they describe their problem:
-- Slang / phrases unique to this group:
-
-**Ad angle that works for them:**
-- Lead with: [emotion / outcome / fear / aspiration]
+**Hot Buttons:** Time savings, recruiter retention, competitive advantage, fear of falling behind, margins/profitability
 
 ---
 
-## ICP 2: [Name — e.g., "The College Student"]
+## ICP 2: The Healthcare Staffing Specialist
 
-**Demographics:**
-- Age range:
-- Gender:
-- Location:
-- Income level:
+**Demographics:** Owner/director of healthcare staffing agency, 10-50 employees, focused on travel nursing, per diem, or allied health, $3M-$25M revenue
 
-**Psychographics:**
-- What keeps them up at night:
-- What they're scrolling for:
-- What they've already tried:
-- What would make them stop scrolling:
+**Psychographics:** Compliance is their nightmare. NLC tracking across 41+ states. Credential verification is manual and error-prone. One expired license placed at a hospital = lawsuit + lost contract. They're premium-priced but compliance costs eat margins. They know technology exists but fear it won't handle healthcare complexity.
 
-**Language they use:**
-- How they describe their problem:
-- Slang / phrases:
+**Language:** "Compliance keeps me up at night." "We can't afford a credentialing mistake." "Onboarding takes too long." "We lose candidates to agencies that move faster."
 
-**Ad angle that works for them:**
-- Lead with:
+**Ad Angle:** Lead with compliance monitoring 24/7. Zero expired credentials placed. Onboarding from 8-12 weeks to 4-6 weeks. This is a risk-elimination play, not just efficiency.
+
+**Hot Buttons:** Compliance risk, credential tracking, speed of placement, hospital contract retention, audit readiness
 
 ---
 
-## ICP 3: [Name — e.g., "The Retiree"]
+## ICP 3: The Growth-Minded Agency VP/Director
 
-**Demographics:**
-- Age range:
-- Gender:
-- Location:
-- Income level:
+**Demographics:** VP of Operations or Director of Talent Acquisition at a mid-market staffing firm, 25-100 employees, $10M-$50M revenue, reports to CEO/PE ownership
 
-**Psychographics:**
-- What keeps them up at night:
-- What they're scrolling for:
-- What they've already tried:
-- What would make them stop scrolling:
+**Psychographics:** Measured on fill rate, time-to-fill, and revenue per recruiter. Has budget but needs to show ROI quickly. Under pressure from PE ownership or board to improve margins without adding headcount. Open to technology but burned by past implementations. Needs to look smart to leadership.
 
-**Language they use:**
-- How they describe their problem:
-- Slang / phrases:
+**Language:** "We need to do more with less." "The board wants 20% margin improvement." "Our fill rate is declining." "We're losing to agencies that move faster." "Show me the ROI."
 
-**Ad angle that works for them:**
-- Lead with:
+**Ad Angle:** Lead with ROI math. One extra placement per recruiter per month = $X. Show the dashboard. This person needs data, not inspiration. Tier 2 (Operations Hub + SDR) is their sweet spot.
+
+**Hot Buttons:** ROI, margin improvement, recruiter productivity metrics, competitive benchmarking, board-ready reporting
 
 ---
 
-## How Eddie Uses ICPs
-For each competitor ad script rewrite, Eddie generates a variation for EACH ICP:
-- 30 competitor scripts × 3 ICPs = 90 variations
-- 50 competitor scripts × 4 ICPs = 200 variations
-- Each variation adapts the hook, language, pain points, and CTA to match the specific ICP
+## ICP 4: The Temp/Light Industrial Agency Owner
+
+**Demographics:** Owner of temp staffing agency, 5-15 employees, focuses on warehouse, manufacturing, construction, $500K-$5M revenue
+
+**Psychographics:** Volume business. Thin margins. Biggest pain is no-shows — they lose $500-$2,000 every time a worker doesn't show up for a shift. Scheduling is chaos. Timesheets are manual. They're not sophisticated technology users but they understand the math of no-show costs.
+
+**Language:** "I had 8 no-shows this week." "We can't keep workers showing up." "Timesheets are a nightmare." "I need to fill 50 positions by Monday."
+
+**Ad Angle:** Lead with no-show reduction (40% → 20% with SMS automation). Then show scheduling automation and timesheet processing. This is pure cost savings they can feel immediately.
+
+**Hot Buttons:** No-show costs, shift filling speed, timesheet accuracy, worker reliability, same-day processing

@@ -41,7 +41,7 @@ function checkEnvFile() {
 }
 
 function checkApiKeys() {
-  require('dotenv').config({ path: ENV_PATH });
+  require('dotenv').config({ override: true, path: ENV_PATH });
   const missing = [];
   const present = [];
 
