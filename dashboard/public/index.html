@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eddie Dashboard</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="sidebar-logo">Eddie<span>Vibe Marketer v2</span></div>
+    <a href="#/" data-page="overview">📊 Overview</a>
+    <a href="#/research" data-page="research">🔍 Research</a>
+    <a href="#/content" data-page="content">📝 Content</a>
+    <a href="#/quality" data-page="quality">✅ Quality</a>
+    <a href="#/performance" data-page="performance">📈 Performance</a>
+    <a href="#/publishing" data-page="publishing">📤 Publishing</a>
+    <a href="#/settings" data-page="settings">⚙️ Settings</a>
+  </nav>
+  <main id="app"></main>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/pages/overview.js"></script>
+  <script src="/js/pages/research.js"></script>
+  <script src="/js/pages/content.js"></script>
+  <script src="/js/pages/quality.js"></script>
+  <script src="/js/pages/performance.js"></script>
+  <script src="/js/pages/publishing.js"></script>
+  <script src="/js/pages/settings.js"></script>
+  <script>App.init();</script>
+</body>
+</html>

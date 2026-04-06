@@ -13,16 +13,18 @@
     "phase6:queue": "node scripts/build-publish-queue.js",
     "phase6:publish": "node scripts/run-publisher.js",
     "content:generate": "node scripts/generate-content.js",
-    "full-cycle": "node scripts/full-cycle.js"
+    "full-cycle": "node scripts/full-cycle.js",
+    "dashboard": "node dashboard/server.js"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
     "apify-client": "^2.9.0",
-    "openai": "^4.52.0",
-    "dotenv": "^16.4.0",
     "axios": "^1.7.0",
-    "csv-writer": "^1.6.0",
     "csv-parser": "^3.0.0",
+    "csv-writer": "^1.6.0",
+    "dotenv": "^16.4.0",
+    "express": "^4.22.1",
+    "openai": "^4.52.0",
     "puppeteer": "^22.0.0"
   }
 }
