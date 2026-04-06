@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "description": "PII detection patterns for content safety scanning",
+  "patterns": [
+    {
+      "name": "email",
+      "regex": "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+      "severity": "high"
+    },
+    {
+      "name": "phone_us",
+      "regex": "\\b(\\+?1[-.\\s]?)?\\(?\\d{3}\\)?[-.\\s]?\\d{3}[-.\\s]?\\d{4}\\b",
+      "severity": "high"
+    },
+    {
+      "name": "ssn",
+      "regex": "\\b\\d{3}[- ]?\\d{2}[- ]?\\d{4}\\b",
+      "severity": "critical"
+    },
+    {
+      "name": "credit_card",
+      "regex": "\\b(?:\\d[ -]*?){13,16}\\b",
+      "severity": "critical"
+    },
+    {
+      "name": "api_key_generic",
+      "regex": "(?i)(api[_-]?key|apikey|secret[_-]?key|access[_-]?token)\\s*[:=]\\s*['\"]?[a-zA-Z0-9_\\-]{20,}",
+      "severity": "critical"
+    },
+    {
+      "name": "ip_address",
+      "regex": "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+      "severity": "medium"
+    }
+  ]
+}

@@ -37,9 +37,12 @@ function loadBrandVoice() {
 
 function parseICPs(icpContent) {
   const icps = [];
-  const sections = icpContent.split(/^## ICP \d+:/m).filter(s => s.trim());
+  // Split on "## ICP N:" headers — first segment is the file header, skip it
+  const sections = icpContent.split(/^## ICP \d+:/m);
 
-  for (const section of sections) {
+  // sections[0] = everything before first "## ICP", skip it
+  for (let i = 1; i < sections.length; i++) {
+    const section = sections[i].trim();
     const nameMatch = section.match(/^\s*(.+?)$/m);
     if (nameMatch) {
       icps.push({
@@ -171,7 +174,8 @@ async function main() {
           formatScripts.push(entry);
 
           // Save individual file
-          const filename = `${id}-${ad.competitor.replace(/\s+/g, '-').toLowerCase()}-${icp.name.replace(/\s+/g, '-').toLowerCase()}.json`;
+          const safeName = icp.name.replace(/[\/\\:*?"<>|]/g, '-').replace(/\s+/g, '-').toLowerCase();
+          const filename = `${id}-${ad.competitor.replace(/\s+/g, '-').toLowerCase()}-${safeName}.json`;
           fs.writeFileSync(path.join(formatDir, filename), JSON.stringify(entry, null, 2));
 
           console.log(`   ✅ Generated (${id})`);

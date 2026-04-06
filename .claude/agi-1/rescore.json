@@ -1,7 +1,22 @@
 {
-  "baseline": {"gstack": 30, "ai_readiness": 20, "self_healing": 0, "total": 50},
-  "rescore": {"gstack": 90, "ai_readiness": 92, "self_healing": 40, "total": 222},
-  "delta": {"gstack": 60, "ai_readiness": 72, "self_healing": 40, "total": 172},
+  "baseline": {"gstack": 77, "ai_readiness": 90, "self_healing": 33, "total": 200},
+  "rescore": {"gstack": 87, "ai_readiness": 95, "self_healing": 48, "total": 230},
+  "delta": {"gstack": 10, "ai_readiness": 5, "self_healing": 15, "total": 30},
   "regression": false,
-  "timestamp": "2026-04-03T00:00:00Z"
+  "timestamp": "2026-04-05T05:45:00Z",
+  "improvements": {
+    "gstack": [
+      "SKILL.md files enhanced with iron law, phases, stop conditions (+6)",
+      ".gitignore expanded from 7 to 39 lines (+4)"
+    ],
+    "ai_readiness": [
+      "Auto-observation hooks deployed (PostToolUse + Stop) (+5)"
+    ],
+    "self_healing": [
+      "Healing patterns populated: 5 patterns from genome + local fixes (+5)",
+      "Learning observations populated: 4 observations from pipeline bugs (+5)",
+      "Security PII patterns deployed (+2)",
+      "Memory archive system deployed (+3)"
+    ]
+  }
 }

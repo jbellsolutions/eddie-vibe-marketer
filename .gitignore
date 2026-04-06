@@ -1,7 +1,39 @@
+# Environment
 .env
+.env.local
+.env.*.local
+
+# Dependencies
 node_modules/
+
+# Build output
+dist/
+build/
+
+# Data (generated/runtime)
 data/competitor-research/
 data/generated-scripts/
 data/creatives/
 data/ad-performance/
+
+# Runtime state files
+publish-log.json
+learnings.json
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+
+# OS files
+.DS_Store
+
+# Editor swap files
+*.swp
+*.swo
+*~
+
+# Media
 *.mp4

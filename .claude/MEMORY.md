@@ -4,3 +4,4 @@
 - [feedback.md](memory/feedback.md) — User feedback on approaches
 - [project.md](memory/project.md) — Project context and ongoing work
 - [reference.md](memory/reference.md) — External resource pointers
+- [archive.md](memory/archive.md) — Archived/rotated memory entries

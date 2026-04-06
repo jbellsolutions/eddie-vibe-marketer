@@ -109,11 +109,16 @@ async function analyzeAd(ad, competitor, index) {
 
     if (hasVideo) {
       const videoPath = path.join(competitorDir, `ad-${index + 1}.mp4`);
-      console.log(`   📥 Downloading ad ${index + 1} (video)...`);
-      await downloadVideo(videoUrl, videoPath);
-      console.log(`   🎤 Transcribing ad ${index + 1}...`);
-      transcript = await transcribeVideo(videoPath);
-      fs.unlinkSync(videoPath);
+      try {
+        console.log(`   📥 Downloading ad ${index + 1} (video)...`);
+        await downloadVideo(videoUrl, videoPath);
+        console.log(`   🎤 Transcribing ad ${index + 1}...`);
+        transcript = await transcribeVideo(videoPath);
+      } catch (videoErr) {
+        console.log(`   ⚠️  Ad ${index + 1}: Video failed (${videoErr.message}) — using text data`);
+      } finally {
+        if (fs.existsSync(videoPath)) fs.unlinkSync(videoPath);
+      }
     } else {
       console.log(`   📄 Ad ${index + 1}: Image/text ad`);
     }

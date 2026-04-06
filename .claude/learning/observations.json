@@ -1,5 +1,42 @@
 {
-  "version": "1.0.0",
-  "observations": [],
-  "last_updated": "2026-04-03T00:00:00Z"
+  "version": "1.1.0",
+  "observations": [
+    {
+      "id": "obs-001",
+      "date": "2026-04-05",
+      "type": "pipeline",
+      "observation": "Phase 1 scrape writes individual ad JSON files but summary shows 0 ads when video transcription errors cause analyzeAd() to return null",
+      "root_cause": "Video download/transcription errors wrapped in same try-catch as file writing — entire function returns null on video failure",
+      "fix_applied": "Isolated video handling in its own try-catch; text data (body copy, headline) still captured even when video fails",
+      "impact": "high"
+    },
+    {
+      "id": "obs-002",
+      "date": "2026-04-05",
+      "type": "data",
+      "observation": "curious_coder/facebook-ads-library-scraper returns data in nested snapshot format — snapshot.body.text, snapshot.videos[], snapshot.cards[]",
+      "root_cause": "Different Apify actors have different output schemas",
+      "fix_applied": "Updated analyzeAd() to handle snapshot nested format with fallbacks to flat format",
+      "impact": "high"
+    },
+    {
+      "id": "obs-003",
+      "date": "2026-04-05",
+      "type": "generation",
+      "observation": "ICP parser was capturing file header '# Ideal Customer Profiles' as a 5th ICP, inflating generation count from 212 to 265",
+      "root_cause": "split(/^## ICP \\d+:/m) returns file header as first segment",
+      "fix_applied": "Skip sections[0] (header) and start from sections[1]",
+      "impact": "medium"
+    },
+    {
+      "id": "obs-004",
+      "date": "2026-04-05",
+      "type": "performance",
+      "observation": "Full pipeline (13 ads × 4 ICPs × 7 formats) generates 212 ad scripts + 32 content pieces = 244 total pieces in one run with zero failures",
+      "root_cause": "N/A — positive observation",
+      "fix_applied": "N/A",
+      "impact": "positive"
+    }
+  ],
+  "last_updated": "2026-04-05T05:15:00Z"
 }

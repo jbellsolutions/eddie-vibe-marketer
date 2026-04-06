@@ -1,5 +1,50 @@
 {
-  "version": "1.0.0",
-  "patterns": [],
-  "last_updated": "2026-04-03T00:00:00Z"
+  "version": "1.1.0",
+  "patterns": [
+    {
+      "id": "node-python-bridge-json-parse",
+      "description": "Node child_process.execFile calling Python script fails when Python prints non-JSON to stdout before the JSON result",
+      "trigger": "JSON.parse fails on publisher output with 'Unexpected token' error",
+      "fix": "Ensure Python script only outputs the final JSON.dumps() to stdout. Use stderr for debug logging. In Node, try/catch JSON.parse on stdout.",
+      "confidence": 0.85,
+      "source": "genome"
+    },
+    {
+      "id": "dotenv-override-claude-code",
+      "description": "Claude Code session sets empty ANTHROPIC_API_KEY in env, dotenv doesn't override existing vars by default",
+      "trigger": "API calls fail with invalid API key despite correct .env file",
+      "fix": "Use require('dotenv').config({ override: true, path: ... }) in all scripts",
+      "confidence": 1.0,
+      "source": "local",
+      "fix_count": 7
+    },
+    {
+      "id": "apify-actor-meta-blocked",
+      "description": "Official apify/facebook-ads-scraper actor gets rate-limited/blocked by Meta's API",
+      "trigger": "Apify scrape returns 0 results or times out on Meta Ad Library",
+      "fix": "Use curious_coder/facebook-ads-library-scraper actor instead (4.8-star, reliable)",
+      "confidence": 1.0,
+      "source": "local",
+      "fix_count": 1
+    },
+    {
+      "id": "whisper-video-size-limit",
+      "description": "OpenAI Whisper has a 25MB file size limit for audio/video uploads",
+      "trigger": "Whisper transcription fails with file size error",
+      "fix": "Wrap video transcription in isolated try-catch; fall back to text data (body copy, headline) when video fails",
+      "confidence": 1.0,
+      "source": "local",
+      "fix_count": 1
+    },
+    {
+      "id": "icp-name-slash-filepath",
+      "description": "ICP names containing '/' create invalid filesystem paths when used in filenames",
+      "trigger": "ENOENT error when writing generated content files with ICP name in path",
+      "fix": "Sanitize ICP names with .replace(/[\\/\\\\:*?\"<>|]/g, '-') before using in filenames",
+      "confidence": 1.0,
+      "source": "local",
+      "fix_count": 1
+    }
+  ],
+  "last_updated": "2026-04-05T05:15:00Z"
 }
