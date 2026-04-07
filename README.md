@@ -1,233 +1,137 @@
-<div align="center">
+# Eddie Vibe Marketer V2
 
-# Eddie Vibe Marketer
+A self-improving AI content system that scrapes competitor ads, generates 7 content formats with legendary copywriter DNA, produces avatar videos and static images, and publishes directly to your personal social profiles — all from one command.
 
-### The AI Content Machine That Builds Itself
-
-**Scrape your competitors' best ads. Generate 585+ content pieces across 7 formats. Produce videos with AI avatars. Publish to your personal profiles. Optimize. Repeat.**
-
-One command. ~40 minutes. Every cycle gets smarter.
-
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Claude](https://img.shields.io/badge/Powered%20by-Claude-6366f1?logo=anthropic&logoColor=white)](https://anthropic.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
----
-
-[Quick Start](#-quick-start) | [How It Works](#-how-it-works) | [The 7 Formats](#-the-7-content-formats) | [Titan Agents](#-18-titan-copywriter-agents) | [Dashboard](#-live-dashboard) | [Cost](#-cost-per-cycle)
-
-</div>
-
----
-
-## The Problem
-
-You're spending **$5,000-15,000/month** on creative agencies, $1,100/month on Arcads, or grinding out content manually. Meanwhile, your competitors are shipping 10x more creative volume and testing angles you haven't even thought of.
-
-The math is simple: **more creative volume = more winners found = lower CPA = more profit.** But the creative bottleneck kills most teams before they can scale.
-
-## The Solution
-
-Eddie is a **self-improving AI content pipeline** that:
-
-1. **Scrapes your competitors' live ads** from Meta Ad Library (what's actually working right now)
-2. **Generates 585+ content pieces per cycle** across 7 formats, each injected with DNA from legendary copywriters
-3. **Produces videos** with AI avatars ($29/mo vs $1,100/mo for Arcads) and renders static images locally for free
-4. **Publishes directly to your personal profiles** — Facebook, LinkedIn, Instagram, TikTok — via browser automation
-5. **Learns from performance data** and biases the next cycle toward winners
-
-**Run `npm run full-cycle` and walk away.** Come back to 585+ ready-to-ship content pieces.
-
----
-
-## What You Get
-
-```
-npm run full-cycle
-```
-
-```
- RESEARCH          GENERATE             QUALITY GATE         PRODUCE              PUBLISH             OPTIMIZE
- ─────────         ────────             ────────────         ───────              ───────             ────────
- Scrape Meta       Claude generates     Batch review         HeyGen avatars,      Browser Use         Pull performance
- Ad Library +      7 formats with       against writing      Argil personal       posts to your       data, find winners,
- transcribe        18 Titan copywriter  rules. Pass,         clone, Puppeteer     personal FB, LI,    feed learnings
- with Whisper.     DNA injected.        fail, or rewrite.    static images.       IG, TikTok.         into next cycle.
-
- Phase 1            Phase 3              Phase 3.5            Phase 4              Phase 6             Phase 5
-```
-
-**One cycle = ~585 content pieces in ~40 minutes. Each cycle gets smarter.**
-
----
-
-## Before & After
-
-| | **Without Eddie** | **With Eddie** |
-|---|---|---|
-| **Creative volume** | 10-20 pieces/week | 585+ pieces/cycle |
-| **Competitor intel** | Manual ad library browsing | Automated scrape + transcription |
-| **Content quality** | Generic AI or expensive agency | 18 legendary copywriter agents |
-| **Video production** | Arcads ($1,100/mo) or manual | HeyGen ($29/mo) + Argil clone |
-| **Publishing** | Copy-paste to each platform | Auto-post to personal profiles |
-| **Optimization** | Gut feel | Data-driven: winners compound |
-| **Cost per cycle** | $2,000-5,000 | **$41-62** |
-| **Time per cycle** | 2-4 weeks | **~40 minutes** |
+Inspired by [Ernesto Lopez's $300K/yr app marketing system](https://x.com/ErnestoSOFTWARE).
 
 ---
 
 ## How It Works
 
-### Phase 1: Competitive Intelligence
+Eddie runs in **cycles**. Each cycle has 6 phases:
+
 ```
-Competitor URLs → Apify scrapes Meta Ad Library → OpenAI Whisper transcribes video ads
-→ Extracts: hooks, body copy, CTAs, angles, media type, platforms, active status
-→ Output: research-summary.json (structured competitor ad database)
+ RESEARCH        GENERATE           QUALITY GATE       PRODUCE            PUBLISH           OPTIMIZE
+ ─────────       ────────           ────────────       ───────            ───────           ────────
+ Scrape Meta     Claude generates   Batch review       HeyGen avatars,    Browser Use       Pull ad data,
+ Ad Library +    7 formats with     against writing    Argil clones,      posts to your     find winners,
+ transcribe      Titan copywriter   rules. Pass,       Puppeteer images,  personal FB,      feed learnings
+ with Whisper.   DNA injected.      fail, or rewrite.  UGC briefs.        LI, IG, TikTok.   into next cycle.
+
+ Phase 1          Phase 3            Phase 3.5          Phase 4            Phase 6           Phase 5
+ (automated)      (automated)        (automated)        (automated)        (automated)       (after data)
 ```
-Scrapes real ads that are **running right now** — not templates, not theory. What's actually spending money today.
 
-### Phase 3: Multi-Format Generation
-```
-Research + Brand Voice + Titan Copywriter DNA
-→ 7 formats × ICPs × tiered competitor ads
-→ 585+ content pieces per cycle
-```
-Each piece is generated through Claude with:
-- Your **brand voice** (tone, vocabulary, product knowledge)
-- Your **ICPs** (each ad rewritten per audience segment — the volume multiplier)
-- **Titan copywriter DNA** (Hormozi's offers, Schwartz's awareness levels, Kennedy's direct response)
-- **Writing rules** (anti-AI-slop filter enforced by quality gate)
+**One cycle = ~40 minutes of automation. Run `npm run full-cycle` and walk away.**
 
-### Phase 3.5: Quality Gate
-Every script is batch-reviewed against your writing rules. Pass, fail, or rewrite. Nothing ships that reads like AI slop.
-
-### Phase 4: Creative Production
-- **UGC Videos** → HeyGen ICP-matched avatars ($29/mo unlimited) or Argil personal clone ($149/mo)
-- **Static Images** → Puppeteer renders HTML templates to PNG (free, local)
-- **Text Content** → Ready to post as-is
-
-### Phase 6: Automated Publishing
-Browser Use posts directly to your **personal profiles** (not business pages) using your real Chrome session. Random timing jitter, crash-safe queue, retry on failure.
-
-### Phase 5: Self-Improvement
-Pull performance data → identify winning ICPs, formats, platforms, angles → bias next cycle toward winners. **CPA drops every cycle.**
+Each cycle gets smarter: Phase 5 identifies which ICPs, formats, platforms, and angles produced winners, then biases the next generation cycle toward those patterns.
 
 ---
 
-## The 7 Content Formats
+## What's New in V2
 
-| Format | Tier | Description | Platforms |
-|--------|------|-------------|-----------|
-| **UGC Video** | 1 (all ads) | HOOK / BODY / CTA / ANGLE — avatar-delivered | Facebook, Instagram, TikTok |
-| **Short Caption** | 1 (all ads) | Punchy caption + hashtags | Instagram, TikTok, Facebook |
-| **LinkedIn Post** | 2 (top 50%) | Hook line / value body / CTA / hashtags | LinkedIn |
-| **Screenshot Static** | 2 (top 50%) | Headline + subtext rendered as tweet/text/notes/review | Facebook, Instagram, LinkedIn |
-| **Text Overlay** | 2 (top 50%) | 6 cards, 3-8 words each — swipeable | Instagram, TikTok, Facebook |
-| **Carousel** | 3 (top 20%) | Cover + 5 slides + CTA card | LinkedIn, Instagram, Facebook |
-| **B-Roll Script** | 3 (top 20%) | Voiceover + visual direction + CTA | Facebook, Instagram, TikTok |
-
-**Volume math:** 50 competitor ads x 3 ICPs → Tier 1: 300, Tier 2: 225, Tier 3: 60 = **~585 pieces/cycle** at ~$5-8 Claude Haiku cost.
-
-### Plus 8 Long-Form Content Formats
-
-Run `npm run content:generate` separately to produce:
-
-| Format | Length | Use Case |
-|--------|--------|----------|
-| Authority Brief | 500-800 words | Thought leadership for email/blog |
-| Facebook Post | 200-400 words | Organic feed engagement |
-| LinkedIn Post | 200-400 words | Professional audience storytelling |
-| LinkedIn Article | 800-1200 words | Deep-dive long-form on LinkedIn |
-| Medium Article | 1000-1500 words | SEO + authority building |
-| Substack Post | 800-1200 words | Newsletter audience nurture |
-| Newsletter | 600-1000 words | Email list engagement |
-| YouTube Video Package | Script + description + tags | Full video content kit |
+| V1 | V2 |
+|----|-----|
+| 1 format (UGC video scripts) | 7 formats (UGC video, LinkedIn posts, screenshot statics, carousels, b-roll scripts, text overlays, short captions) |
+| Generic Claude prompts | 18 Titan copywriter agents inject legendary copywriter DNA (Hormozi, Kennedy, Schwartz, etc.) |
+| Arcads only ($1,100/mo for 100 videos) | HeyGen ($29/mo unlimited) + Argil ($149/mo personal clone) + Puppeteer static images |
+| No publishing | Browser Use auto-posts to personal Facebook, LinkedIn, Instagram, TikTok |
+| No quality review | Quality gate batch-reviews all scripts against writing rules before production |
+| Track ICPs + angles only | Track ICPs + angles + formats + platforms for smarter optimization |
 
 ---
 
-## 18 Titan Copywriter Agents
+## What's In The Box
 
-Every piece of content is infused with copywriting DNA from legends. The Titan Router maps formats to specialist agents:
-
-| Agent | Specialty | Formats |
-|-------|-----------|---------|
-| **Alex Hormozi** | Irresistible offers, value stacking | UGC Video |
-| **Dan Kennedy** | Direct response, hard CTAs, urgency | UGC Video, B-Roll, Text Overlay |
-| **Eugene Schwartz** | Awareness levels, breakthrough headlines | Screenshot Static, Text Overlay |
-| **Jay Abraham** | Strategic value, unique mechanisms | LinkedIn Post |
-| **Joe Sugarman** | Sequential persuasion, slippery slope | Carousel |
-| **Gary Bencivenga** | Emotional precision, proof stacking | Screenshot Static |
-| **Todd Brown** | Unique mechanism reveals | Carousel |
-| **Tom Bilyeu** | Inspirational storytelling | LinkedIn Post |
-| **Fred Catona** | Broadcast pacing, mass appeal | B-Roll Script |
-| **Jon Buchan** | Humor, personality-driven copy | Short Caption |
-| **Bill Mueller** | Benefit-dense compression | Short Caption |
-| + 7 more | Kurtz, McCarthy, Marshall, Grossman, Renker, Ottley, Lead Gen Jay | Various specialties |
-
-These aren't full agent processes — their system prompts (~200 tokens each) are injected as a "COPYWRITING STYLE INFLUENCE" section. Lightweight, effective, zero overhead.
-
----
-
-## Live Dashboard
-
-```bash
-npm run dashboard
-# → http://localhost:3000
+```
+eddie-vibe-marketer/
+├── scripts/                        # Phase executors (Node.js)
+│   ├── ad-research.js              # Phase 1: Apify scrape + Whisper transcription
+│   ├── voice-check.js              # Phase 2: Brand voice validation (one-time)
+│   ├── generate-scripts.js         # Phase 3: Multi-format generation with Titans
+│   ├── quality-gate.js             # Phase 3.5: Batch quality review
+│   ├── produce-creatives.js        # Phase 4: Videos + images + UGC briefs
+│   ├── optimize-loop.js            # Phase 5: Performance analysis + learnings
+│   ├── build-publish-queue.js      # Phase 6a: Schedule posts per platform
+│   ├── run-publisher.js            # Phase 6b: Execute publish queue
+│   ├── full-cycle.js               # Orchestrator: 1 → 3 → 3.5 → 4 → 6a
+│   ├── setup.js                    # Validates env + dependencies + configs
+│   └── lib/                        # Shared modules
+│       ├── titan-router.js         # Routes formats → copywriter agents
+│       ├── formats.js              # 7 format definitions + prompt templates
+│       ├── generator.js            # Content generation engine (Claude API)
+│       ├── heygen-client.js        # HeyGen v2 API wrapper
+│       ├── argil-client.js         # Argil API wrapper (personal clone)
+│       └── image-generator.js      # Puppeteer HTML → PNG renderer
+├── publisher/                      # Browser Use publisher (Python)
+│   ├── publish.py                  # Entry point — called from Node via execFile
+│   ├── requirements.txt            # browser-use, langchain-anthropic
+│   └── platforms/                  # Per-platform posting logic
+│       ├── facebook.py             #   Personal profile posting
+│       ├── linkedin.py             #   Feed posts + articles
+│       ├── instagram.py            #   Web interface posting
+│       └── tiktok.py               #   Video upload flow
+├── titans/                         # Titan Genome — 18 copywriter agents
+│   ├── council/agents/             # Agent JSONs (Hormozi, Kennedy, etc.)
+│   ├── config/                     # Router + author definitions
+│   └── SWIPE_FILE_CONTEXT.md       # Copywriting principles reference
+├── brand-voice/                    # Your brand identity (fill out once)
+│   ├── voice.md                    # Tone, personality, vocabulary
+│   ├── product.md                  # Product details, features, positioning
+│   ├── icp.md                      # 2-4 audience personas (the multiplier)
+│   └── writing-rules.md           # Anti-AI-slop rules (pre-configured)
+├── config/                         # System configuration
+│   ├── .env.example                # API key template
+│   ├── research-config.json        # Competitor list + scraping settings
+│   ├── formats.json                # Format enable/disable + tier config
+│   ├── avatar-config.json          # ICP → avatar mappings (HeyGen/Argil)
+│   └── publish-config.json         # Per-platform schedule + Chrome profile
+├── templates/image-templates/      # HTML templates for Puppeteer rendering
+├── data/                           # Runtime output (gitignored)
+│   ├── competitor-research/        # Phase 1 output
+│   ├── generated-scripts/          # Phase 3 output (by-format/)
+│   ├── creatives/                  # Phase 4 output (videos, images, briefs)
+│   ├── ad-performance/             # Phase 5 data + learnings.json
+│   ├── publish-queue.json          # Phase 6a output
+│   └── publish-log.json            # Phase 6b execution log
+├── tests/                          # Smoke tests
+├── ARCHITECTURE.md                 # Full data flow diagrams
+├── AGENTS.md                       # AI agent documentation
+├── ETHOS.md                        # Project principles
+├── CHANGELOG.md                    # Version history
+├── WALKTHROUGH.md                  # Interactive setup guide
+└── DEPLOYMENT-GUIDE.md             # Detailed deployment instructions
 ```
 
-<table>
-<tr>
-<td width="50%">
+---
 
-**Pipeline Overview** — stat cards, phase status, one-click run buttons
+## Prerequisites
 
-**Competitor Intelligence** — filterable table with expandable ad details
-
-**Content Browser** — 212+ scripts in a card grid with format/ICP filters
-
-</td>
-<td width="50%">
-
-**Quality Gate** — pass/fail donut chart + results table
-
-**Performance** — bar charts for winning formats, ICPs, platforms
-
-**Settings** — format toggles, competitor URLs, API key status
-
-</td>
-</tr>
-</table>
-
-Dark theme. Vanilla JS. No build step. SSE streaming for live phase output.
+- **Node.js** 18+ (`node -v`)
+- **Python** 3.10+ (`python3 --version`) — for Browser Use publisher
+- **Google Chrome** — for Browser Use personal profile posting
+- API accounts (see below)
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. Clone & install
-git clone https://github.com/jbellsolutions/eddie-vibe-marketer.git
-cd eddie-vibe-marketer
+# 1. Install
 npm install
-
-# 2. Set up the publisher (Python)
 cd publisher && pip install -r requirements.txt && cd ..
 
-# 3. Configure API keys
+# 2. Configure
 cp config/.env.example .env
-# Edit .env with your keys (see API Keys section below)
+# Open .env and add your API keys
 
-# 4. Define your brand (the most important step)
-# Edit the 4 files in brand-voice/ — this is what makes YOUR content unique:
-#   voice.md      → How you sound (paste your 3-5 best-performing examples)
-#   product.md    → What you're selling (features, proof, positioning)
-#   icp.md        → Who you're selling to (2-4 personas — the volume multiplier)
-#   writing-rules.md → Already configured with anti-AI-slop rules
+# 3. Set up brand voice
+# Edit the 4 files in brand-voice/ with your actual brand info
 
-# 5. Validate everything
+# 4. Validate
 npm run setup
 
-# 6. Run it
+# 5. Run
 npm run full-cycle
 ```
 
@@ -238,85 +142,94 @@ npm run full-cycle
 | Key | Service | Purpose | Required | Cost |
 |-----|---------|---------|----------|------|
 | `APIFY_API_TOKEN` | [Apify](https://console.apify.com/account/integrations) | Scrape Meta Ad Library | Yes | ~$5-15/run |
-| `OPENAI_API_KEY` | [OpenAI](https://platform.openai.com/api-keys) | Whisper video transcription | Yes | ~$0.006/min |
+| `OPENAI_API_KEY` | [OpenAI](https://platform.openai.com/api-keys) | Whisper transcription | Yes | ~$0.006/min |
 | `ANTHROPIC_API_KEY` | [Anthropic](https://console.anthropic.com/settings/keys) | Content generation + quality gate + Browser Use | Yes | ~$0.01-0.50/script |
-| `HEYGEN_API_KEY` | [HeyGen](https://app.heygen.com/settings) | ICP-matched avatar videos | For video | $29/mo |
-| `ARGIL_API_KEY` | [Argil](https://app.argil.ai/settings) | Personal clone videos | Optional | $149/mo |
-| `SINGULAR_API_KEY` | [Singular](https://app.singular.net/) | Ad performance data import | Optional | Varies |
-| `SLACK_WEBHOOK_URL` | Slack | Cycle completion notifications | Optional | Free |
+| `HEYGEN_API_KEY` | [HeyGen](https://app.heygen.com/settings) | ICP-matched avatar videos | For video | $29/mo (Creator) |
+| `ARGIL_API_KEY` | [Argil](https://app.argil.ai/settings) | Personal clone videos | For clone | $149/mo (Pro) |
+| `SINGULAR_API_KEY` | [Singular](https://app.singular.net/) | Ad performance data | For optimization | Varies |
+| `CLAUDE_MODEL` | N/A | Model selection (default: Haiku) | No | Free setting |
+| `SLACK_WEBHOOK_URL` | Slack | Cycle completion notifications | No | Free |
 
 ### Model Selection
 
-Control quality vs. cost with `CLAUDE_MODEL` in `.env`:
+Set `CLAUDE_MODEL` in your `.env`:
 
-| Model | Cost/Script | Quality | Use When |
-|-------|-------------|---------|----------|
-| `claude-haiku-4-5-20251001` **(default)** | ~$0.01 | Good | Testing, iteration, high volume |
-| `claude-sonnet-4-6` | ~$0.10 | Great | Polished content, proven angles |
-| `claude-opus-4-6` | ~$0.50 | Best | Premium brands, final campaigns |
-
----
-
-## Cost Per Cycle
-
-### Lean Setup — Start Here
-
-| Service | Cost | Notes |
-|---------|------|-------|
-| Apify | $5-15 | Per scrape run |
-| OpenAI Whisper | $2-10 | $0.006/min of audio |
-| Claude Haiku | $5-8 | ~$0.01/piece x ~585 pieces |
-| HeyGen | $29/mo | Unlimited avatar videos |
-| Puppeteer | $0 | Renders static images locally |
-| Browser Use | $0 | Open source browser automation |
-| **Total** | **~$41-62/cycle** | + $29/mo HeyGen |
-
-**That's ~$0.07-0.11 per content piece.** Including video production.
-
-### Compared to Alternatives
-
-| Alternative | Monthly Cost | Creative Volume |
-|-------------|-------------|-----------------|
-| Creative agency | $5,000-15,000 | 20-50 pieces |
-| Arcads + copywriter | $2,200-3,500 | 50-100 videos |
-| In-house content team | $8,000-15,000 | 100-200 pieces |
-| **Eddie (lean setup)** | **$70-90** | **585+ pieces** |
+| Model | Cost/Script | Quality | Best For |
+|-------|------------|---------|----------|
+| `claude-haiku-4-5-20251001` (default) | ~$0.01 | Good | High volume, testing, iteration |
+| `claude-sonnet-4-6` | ~$0.10 | Great | Polished content, after finding winners |
+| `claude-opus-4-6` | ~$0.50 | Best | Premium brands, final campaign scripts |
 
 ---
 
 ## All Commands
 
-| Command | What It Does |
-|---------|-------------|
-| `npm run setup` | Validates API keys, brand voice, configs |
-| `npm run full-cycle` | **Runs the entire pipeline end-to-end** |
-| `npm run phase1:research` | Scrapes competitor ads + transcribes video |
-| `npm run phase2:voice-check` | Validates brand voice files (one-time) |
-| `npm run phase3:generate` | Generates 7 ad content formats with Titan DNA |
-| `npm run phase3:quality` | Quality gate review against writing rules |
-| `npm run phase4:produce` | Produces videos (HeyGen/Argil) + static images |
-| `npm run phase5:optimize` | Analyzes performance, writes learnings |
-| `npm run phase6:queue` | Builds publish queue with platform scheduling |
-| `npm run phase6:publish` | Posts to personal profiles via Browser Use |
-| `npm run phase6:publish -- --dry-run` | Preview publish plan without posting |
-| `npm run content:generate` | Generates 8 long-form content formats |
-| `npm run dashboard` | Launches local dashboard on port 3000 |
+| Command | Phase | What It Does |
+|---------|-------|-------------|
+| `npm run setup` | — | Validates API keys, brand voice, configs |
+| `npm run phase1:research` | 1 | Scrapes competitor ads + transcribes with Whisper |
+| `npm run phase2:voice-check` | 2 | Validates brand voice files (one-time) |
+| `npm run phase3:generate` | 3 | Generates 7 content formats with Titan DNA |
+| `npm run phase3:quality` | 3.5 | Quality gate review against writing rules |
+| `npm run phase4:produce` | 4 | Produces HeyGen/Argil videos + Puppeteer images + UGC briefs |
+| `npm run phase5:optimize` | 5 | Analyzes performance, writes learnings for next cycle |
+| `npm run phase6:queue` | 6a | Builds publish queue with per-platform scheduling |
+| `npm run phase6:publish` | 6b | Posts to personal profiles via Browser Use |
+| `npm run phase6:publish -- --dry-run` | 6b | Preview what would be published (no posting) |
+| `npm run phase6:publish -- --limit 3` | 6b | Publish max 3 items from queue |
+| `npm run full-cycle` | All | Runs Phases 1 → 3 → 3.5 → 4 → 6a in sequence |
+
+---
+
+## The 7 Content Formats
+
+Eddie generates content across 7 formats, organized in tiers that control volume:
+
+| Format | Tier | Words | Output | Platforms |
+|--------|------|-------|--------|-----------|
+| **UGC Video** | 1 (all ads) | 40-120 | HOOK / BODY / CTA / ANGLE | Facebook, Instagram, TikTok |
+| **Short Caption** | 1 (all ads) | 30-60 | Caption + hashtags | Instagram, TikTok, Facebook |
+| **LinkedIn Post** | 2 (top 50%) | 150-300 | Hook line / body / CTA / hashtags | LinkedIn |
+| **Screenshot Static** | 2 (top 50%) | 20-40 | Headline + subtext (rendered to PNG) | Facebook, Instagram, LinkedIn |
+| **Text Overlay** | 2 (top 50%) | 18-48 | 6 cards, 3-8 words each (rendered to PNG) | Instagram, TikTok, Facebook |
+| **Carousel** | 3 (top 20%) | 105-175 | Cover + 5 slides + CTA (rendered to PNG) | LinkedIn, Instagram, Facebook |
+| **B-Roll Script** | 3 (top 20%) | 40-100 | Voiceover + visual direction + CTA | Facebook, Instagram, TikTok |
+
+**Volume math:** 50 ads x 3 ICPs → Tier 1: 300 pieces, Tier 2: 225 pieces, Tier 3: 60 pieces = **~585 pieces per cycle** at ~$5-8 Haiku cost.
+
+---
+
+## Titan Copywriter Agents
+
+Every piece of content is infused with copywriting DNA from legendary marketers. The Titan Router maps each format to 1-2 specialist agents:
+
+| Format | Titan Agents | Why |
+|--------|-------------|-----|
+| UGC Video | Hormozi + Kennedy | Irresistible offers + direct response hooks |
+| LinkedIn Post | Abraham + Bilyeu | Strategic value + inspirational storytelling |
+| Screenshot Static | Schwartz + Bencivenga | Awareness-level headlines + emotional precision |
+| Carousel | Sugarman + Brown | Sequential persuasion + unique mechanism reveals |
+| B-Roll Script | Catona + Kennedy | Broadcast pacing + hard-hitting CTAs |
+| Text Overlay | Schwartz + Kennedy | Pattern-interrupt headlines + urgency |
+| Short Caption | Buchan + Mueller | Humor/personality + benefit-dense compression |
+
+The agents are not standalone processes — their system prompts (~200 tokens each) are injected into the generation prompt as a "COPYWRITING STYLE INFLUENCE" section. No full council process unless you want it.
 
 ---
 
 ## Video Production
 
-### HeyGen — $29/mo Unlimited Avatar Videos
-ICP-matched avatars. Different demographics per audience segment:
-- "Busy Mom" ICP → Female avatar, 30-45
-- "Young Founder" ICP → Male avatar, 25-35
-- Configure in `config/avatar-config.json`
+### HeyGen ($29/mo — Unlimited Videos)
+ICP-matched avatars. Different avatar demographics for different audience segments:
+- "Mom" ICP → Female avatar, 30-45 age range
+- "Student" ICP → Male avatar, 18-25 age range
+- Configure mappings in `config/avatar-config.json`
 
-### Argil — $149/mo Personal Clone
-Your face, your voice, your mannerisms. For founder-brand content where authenticity matters. Auto-limited to top scripts per cycle.
+### Argil ($149/mo — Personal Clone)
+Your face, your voice, your mannerisms. For founder-brand content where authenticity matters. Limited to top scripts (configurable `max_per_cycle`).
 
-### Puppeteer — Free Static Images
-HTML templates rendered to PNG locally. Four screenshot styles (tweet, text-message, notes-app, review), carousel slides, text overlay cards. Zero cost.
+### Puppeteer (Free — Static Images)
+HTML templates rendered to PNG for screenshot statics, carousels, and text overlay cards. Four screenshot styles: tweet, text-message, notes-app, review. Carousel slides with cover/content/CTA differentiation.
 
 ---
 
@@ -324,64 +237,143 @@ HTML templates rendered to PNG locally. Four screenshot styles (tweet, text-mess
 
 Posts directly to your **personal profiles** (not business pages) using browser automation with your real Chrome login session.
 
-**Supported:** Facebook, LinkedIn, Instagram, TikTok
+### Supported Platforms
+- **Facebook** — Personal feed posts with text + media
+- **LinkedIn** — Feed posts with text + media upload
+- **Instagram** — Web interface posting (requires media)
+- **TikTok** — Video upload via tiktok.com/upload
 
-**Safety features:**
-- Random 1-5 minute jitter on scheduled times (looks natural)
-- 5-15 second pause between posts
-- Crash-safe queue (saves after every post)
-- Retry on failure (max 2 attempts)
-- `--dry-run` mode for testing
-- `--limit N` to cap posts per run
+### How It Works
+1. `build-publish-queue.js` creates a schedule from your production manifest
+2. Each platform has configured posting times and daily limits (in `config/publish-config.json`)
+3. `run-publisher.js` processes the queue, calling Python's Browser Use agent for each post
+4. Random jitter (1-5 min) on scheduled times to appear natural
+5. 5-15 second pause between posts
+6. Crash-safe: queue saves after every post, retry on failure (max 2 attempts)
+
+### Setup
+1. Set your Chrome profile path in `config/publish-config.json`
+2. Set the Python venv path (default: `/Users/home/browser-use-local/.venv/bin/python`)
+3. Log into all platforms in Chrome first — Browser Use uses your existing sessions
+4. Always `--dry-run` before your first live publish
 
 ---
 
-## The Self-Improvement Loop
+## Brand Voice Setup (One-Time)
+
+Eddie's output quality depends entirely on how well you define your brand. Four files to customize:
+
+### `brand-voice/voice.md` — How You Sound
+Paste 3-5 of your best-performing ad scripts as examples. Define your tone, vocabulary, and cadence. Eddie learns your voice from these examples.
+
+### `brand-voice/product.md` — What You're Selling
+Product name, one-liner, core features, pricing, social proof, competitive advantages. Eddie weaves these proof points into content naturally.
+
+### `brand-voice/icp.md` — Who You're Selling To
+Define 2-4 audience personas with demographics, psychographics, language, and preferred angles. **This is the multiplier** — each ad gets rewritten once per ICP.
+
+### `brand-voice/writing-rules.md` — The Anti-AI Filter
+Pre-configured with banned AI-slop words, banned starters, and required style rules. The quality gate enforces these automatically.
+
+---
+
+## Self-Improvement Loop
 
 ```
 Cycle 1: Broad exploration
-├── 585 pieces across 7 formats, 3 ICPs, 4 platforms
-├── Phase 5 finds: "Busy Mom" ICP + screenshot statics on Facebook = 3x lower CPA
-│
-Cycle 2: Biased toward winners
-├── More Busy Mom content, more screenshot statics, more Facebook
-├── Phase 5 finds: Short hooks (under 5 words) + Hormozi-style offers win
-│
+├── Generate 585 pieces across 7 formats and 3 ICPs
+├── Publish to personal profiles, run paid on Meta
+├── Wait 7-14 days for performance data
+└── Phase 5 finds: "Busy Mom" ICP + screenshot statics on Facebook = 3x lower CPA
+
+Cycle 2: Informed by winners
+├── Biased toward Busy Mom + screenshot statics + Facebook
+├── More carousel content (Tier 3 winners get promoted)
+├── LinkedIn posts underperforming → reduced volume
+└── Phase 5 finds: Short hooks (under 5 words) + Hormozi-style offers win
+
 Cycle 3+: Compounding intelligence
-├── Double down on proven ICP x format x platform x angle combinations
-├── CPA drops every cycle. Winners compound. Losers get pruned.
+├── Double down on proven ICP × format × platform combinations
+├── CPA drops further each cycle
+└── Learnings compound across formats and platforms
 ```
 
-`learnings.json` bridges cycles, tracking: best ICPs, formats, platforms, competitor sources, angles, and specific copywriting patterns that convert.
+The `learnings.json` file bridges cycles. It tracks:
+- Best ICPs, competitor sources, angles (from V1)
+- **Best formats** (which of the 7 content types convert)
+- **Best platforms** (which social channels drive results)
 
 ---
 
-## Project Structure
+## Cost Per Cycle
+
+### Lean Setup (recommended to start)
+
+| Service | Cost | Notes |
+|---------|------|-------|
+| Apify | $5-15 | Per scrape run |
+| OpenAI Whisper | $2-10 | $0.006/min of audio |
+| Claude Haiku | $5-8 | ~$0.01/piece × ~585 pieces |
+| HeyGen | $29/mo | Unlimited avatar videos |
+| Puppeteer | $0 | Free — renders locally |
+| Browser Use | $0 | Free — open source |
+| **Total** | **~$41-62/cycle** | + $29/mo HeyGen |
+
+### Full Setup
+
+| Service | Cost | Notes |
+|---------|------|-------|
+| Apify | $5-15 | Per scrape run |
+| OpenAI Whisper | $2-10 | Transcription |
+| Claude Sonnet | $50-60 | ~$0.10/piece for polish |
+| HeyGen | $29/mo | Avatar videos |
+| Argil | $149/mo | Personal clone videos |
+| UGC Creators | $75-250 | For top-tier briefs |
+| **Total** | **~$130-335/cycle** | + $178/mo subscriptions |
+
+### Ways to Cut Costs
+- Haiku (default) is 10x cheaper than Sonnet — start here
+- 2-3 competitors instead of 10
+- 2 ICPs instead of 4 — halves everything
+- Skip Argil — HeyGen only until you prove ROI
+- Disable formats you don't need in `config/formats.json`
+
+---
+
+## No Singular? No Problem
+
+Export performance data from your ad platform and save as `data/ad-performance/manual-data.json`:
+
+```json
+[
+  {
+    "creative_id": "script-1",
+    "creative_name": "Hook Test - Busy Mom - CompetitorA",
+    "custom_installs": "150",
+    "custom_revenue": "450.00",
+    "adn_cost": "300.00"
+  }
+]
+```
+
+Then run `npm run phase5:optimize` as normal.
+
+---
+
+## Typical Workflow
 
 ```
-eddie-vibe-marketer/
-├── scripts/                      # Pipeline phases (Node.js)
-│   ├── ad-research.js            # Phase 1: Apify + Whisper
-│   ├── generate-scripts.js       # Phase 3: 7 formats + Titans
-│   ├── quality-gate.js           # Phase 3.5: Batch review
-│   ├── produce-creatives.js      # Phase 4: Videos + images
-│   ├── optimize-loop.js          # Phase 5: Performance analysis
-│   ├── build-publish-queue.js    # Phase 6a: Scheduling
-│   ├── run-publisher.js          # Phase 6b: Browser Use bridge
-│   ├── generate-content.js       # 8 long-form content formats
-│   ├── full-cycle.js             # End-to-end orchestrator
-│   └── lib/                      # Titan router, formats, generators
-├── publisher/                    # Browser Use publisher (Python)
-├── titans/                       # 18 Titan copywriter agents
-├── brand-voice/                  # Your brand identity (customize once)
-├── config/                       # System configuration
-├── dashboard/                    # Local web dashboard
-├── templates/image-templates/    # HTML → PNG templates
-├── data/                         # Runtime output (gitignored)
-├── ARCHITECTURE.md               # Full data flow diagrams
-├── AGENTS.md                     # AI agent documentation
-├── WALKTHROUGH.md                # Interactive setup guide
-└── DEPLOYMENT-GUIDE.md           # Detailed deployment
+Week 1:     npm run setup → customize brand voice → npm run full-cycle
+            Review content → npm run phase6:publish --dry-run → npm run phase6:publish
+            Upload top videos to Meta Ads as paid.
+
+Week 2-3:   Content auto-posting to personal profiles.
+            Paid ads collecting performance data.
+
+Week 3-4:   npm run phase5:optimize → npm run full-cycle
+            New content biased toward winners. Repeat.
+
+Week 5+:    Each cycle gets smarter. CPA drops. Winners compound.
 ```
 
 ---
@@ -391,38 +383,42 @@ eddie-vibe-marketer/
 | Problem | Fix |
 |---------|-----|
 | `npm run setup` shows missing keys | Add API keys to `.env` |
-| Brand voice "needs customization" | Replace `[YOUR...]` placeholders in `brand-voice/*.md` |
-| Phase 1 finds 0 ads | Check competitor URLs in `config/research-config.json` |
+| Brand voice shows "needs customization" | Replace all `[YOUR...]` placeholders in `brand-voice/*.md` |
+| Phase 1 finds 0 ads | Check competitor config in `research-config.json` |
 | Phase 3 auth error | Verify `ANTHROPIC_API_KEY` has credits |
-| Phase 4 no videos | Set `HEYGEN_API_KEY` + avatar IDs in `config/avatar-config.json` |
-| Publisher hits CAPTCHA | Log into platform in Chrome manually, solve CAPTCHA, retry |
-| Scripts sound generic | Improve `brand-voice/voice.md` with more real examples |
-| Too many pieces | Disable formats in `config/formats.json` or reduce ICPs |
+| Phase 4 no HeyGen videos | Set `HEYGEN_API_KEY` and configure avatar IDs in `avatar-config.json` |
+| Phase 5 creates template | No data yet — fill `manual-data.json` or connect Singular |
+| Publisher fails with CAPTCHA | Log into the platform in Chrome manually, solve CAPTCHA, try again |
+| Publisher fails with 2FA | Complete 2FA in Chrome — Browser Use uses your existing session |
+| Scripts sound generic | Improve `voice.md` with more real examples of your best content |
+| Too many pieces per cycle | Disable formats in `config/formats.json` or reduce ICPs |
 
 ---
 
 ## Dependencies
 
-**Node.js:** `@anthropic-ai/sdk` (Claude), `apify-client` (scraping), `openai` (Whisper), `puppeteer` (image rendering), `axios` (HTTP), `dotenv`, `csv-writer`, `csv-parser`
+### Node.js (package.json)
 
-**Python:** `browser-use` (browser automation), `langchain-anthropic` (Claude agent)
+| Package | Purpose |
+|---------|---------|
+| `@anthropic-ai/sdk` | Claude API for content generation + quality gate |
+| `apify-client` | Meta Ad Library scraper |
+| `openai` | Whisper transcription |
+| `puppeteer` | HTML → PNG image rendering |
+| `dotenv` | Environment variable loading |
+| `axios` | HTTP client (HeyGen, Argil, Singular APIs) |
+| `csv-writer` | UGC creator brief CSV export |
+| `csv-parser` | Performance data CSV import |
+
+### Python (publisher/requirements.txt)
+
+| Package | Purpose |
+|---------|---------|
+| `browser-use` | Browser automation for personal profile posting |
+| `langchain-anthropic` | Claude as the browser agent's decision engine |
 
 ---
 
-## Inspired By
+## License
 
-Built on [Ernesto Lopez's $300K/yr app marketing system](https://x.com/ErnestoSOFTWARE). Eddie takes the manual workflow and automates it end-to-end with multi-format generation, Titan copywriter DNA injection, and self-improving optimization loops.
-
----
-
-<div align="center">
-
-**Run one command. Get 585+ content pieces. Every cycle gets smarter.**
-
-```bash
-npm run full-cycle
-```
-
-MIT License
-
-</div>
+MIT
