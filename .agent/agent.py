@@ -12,7 +12,7 @@ from pathlib import Path
 from datetime import datetime
 
 PROJECT_NAME = "eddie-vibe-marketer"
-REPO_PATH = "/Users/home/Desktop/OpenClaw 10X/eddie-vibe-marketer"
+REPO_PATH = os.environ.get("REPO_PATH", str(Path(__file__).resolve().parent.parent))
 AGENT_DIR = Path(__file__).parent
 IDENTITY_PATH = AGENT_DIR / "identity.json"
 STATE_PATH = AGENT_DIR / "state.json"
